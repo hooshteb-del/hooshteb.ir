@@ -1246,7 +1246,8 @@
             // تلاش برای لود یک تصویر کوچک از سرور
             // می‌توانید از favicon.ico یا هر فایل دیگری استفاده کنید
             img.src = LLM_IP_URL + '/static/favicon.ico?_=' + Date.now();
-            
+            console.log(img.src);
+            alert(img.src)
             // اگر فاولین نبود، از آدرس IP استفاده کن
             // در برخی سرورها favicon.ico وجود ندارد
             setTimeout(function() {
@@ -1265,6 +1266,7 @@
                         btn.disabled = false;
                     };
                     img2.src = LLM_IP_URL + '/static/favicon.ico?_=' + Date.now();
+                    console.log(img2.src);
                 }
             }, 2000);
         }
