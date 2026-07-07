@@ -1216,62 +1216,59 @@
             statusEl.className = 'cta-status show checking';
             statusText.innerHTML = translations[currentLang].cta_checking;
             btn.disabled = true;
-            alert(4000)
+            alert(9000)
+            if (window.location.protocol === "https:") {
             
-            /*
-            fetch(SCRIPT_URL + "?action=check_llm")
-            .then(response => response.text())
-            .then(text => {
+                // سایت با HTTPS باز شده است
+                fetch(SCRIPT_URL + "?action=check_llm")
+                .then(response => response.text())
+                .then(text => {
             
-                console.log(text);
+                    btn.disabled = false;
             
-                if (text.includes("Status = 200")) {
+                    if (text.includes("Status = 200")) {
+                        window.open(LLM_URL, "_blank");
+                    } else {
+                        showOfflineMessage();
+                    }
             
-                    window.open(LLM_URL, "_blank");
+                })
+                .catch(function(error){
             
-                } else {
-            
+                    btn.disabled = false;
+                    console.error(error);
                     showOfflineMessage();
             
-                }
+                });
             
-            })
-            .catch(function(error){
+            }
+            else {
             
-                console.error(error);
+                // سایت با HTTP باز شده است
+                fetch(LLM_URL + '/is_access_hooshteb', {
+                    method: 'GET',
+                    cache: 'no-cache'
+                })
+                .then(function(response) {
             
-                showOfflineMessage();
+                    btn.disabled = false;
             
-            });
-            */
+                    if (response.ok) {
+                        window.open(LLM_URL, '_blank');
+                    } else {
+                        showOfflineMessage();
+                    }
             
-            fetch(LLM_URL + '/is_access_hooshteb', {
-                method: 'GET',
-                cache: 'no-cache'
-            })
-            .then(function(response) {
-                btn.disabled = false;
-                
-                if (response.ok) {
-                    // سرور پاسخ OK داده
-                    window.open(LLM_URL, '_blank');
-                } else {
-                    // سرور پاسخ داده ولی OK نیست (مثلاً 500)
-                    // باز هم آنلاین است، چون اتصال برقرار شده
-                    showOnlineMessage();
-                }
-            })
-           .catch(function(error) {
-              alert(1000)
-              btn.disabled = false;
-        
-              alert(error.name + "\n" + error.message);
-        
-              console.error(error);
-        
-              showOfflineMessage();
-           });
-           
+                })
+                .catch(function(error) {
+            
+                    btn.disabled = false;
+                    console.error(error);
+                    showOfflineMessage();
+            
+                });
+            
+            }            
             
         }        
         // ============================================================
