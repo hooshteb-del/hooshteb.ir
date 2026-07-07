@@ -432,16 +432,23 @@
 
     <script>
         // ============================================================
-        //  شروع کد JavaScript
+        //  صبر می‌کنیم تا DOM کامل بارگذاری شود
         // ============================================================
-        (function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            
             // آدرس Web App خودت رو اینجا قرار بده
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXuLF5yHJXxKC_wQrToKpYTIaeWMzyHMJiBpKd25paSRMsyi3WMjD5AynYNPztwobC/exec';
+            var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXuLF5yHJXxKC_wQrToKpYTIaeWMzyHMJiBpKd25paSRMsyi3WMjD5AynYNPztwobC/exec';
 
-            const form = document.getElementById('appointmentForm');
-            const statusMsg = document.getElementById('statusMessage');
-            const statusText = document.getElementById('statusText');
-            const submitBtn = document.getElementById('submitBtn');
+            var form = document.getElementById('appointmentForm');
+            var statusMsg = document.getElementById('statusMessage');
+            var statusText = document.getElementById('statusText');
+            var submitBtn = document.getElementById('submitBtn');
+
+            // بررسی اینکه عناصر پیدا شدند
+            if (!form || !statusMsg || !statusText || !submitBtn) {
+                console.error('❌ برخی از عناصر فرم پیدا نشدند!');
+                return;
+            }
 
             function setStatus(message, type) {
                 statusMsg.className = 'status-message ' + type;
@@ -549,26 +556,33 @@
             // تنظیم تاریخ پیش‌فرض
             (function() {
                 var dateInput = document.getElementById('visitDate');
-                var tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                var year = tomorrow.getFullYear();
-                var month = String(tomorrow.getMonth() + 1).padStart(2, '0');
-                var day = String(tomorrow.getDate()).padStart(2, '0');
-                dateInput.value = year + '-' + month + '-' + day;
+                if (dateInput) {
+                    var tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    var year = tomorrow.getFullYear();
+                    var month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+                    var day = String(tomorrow.getDate()).padStart(2, '0');
+                    dateInput.value = year + '-' + month + '-' + day;
+                }
             })();
 
             // محدودیت ورودی
-            document.getElementById('nationalCode').addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '').slice(0, 10);
-            });
-            document.getElementById('mobile').addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '').slice(0, 11);
-            });
+            var nationalCodeInput = document.getElementById('nationalCode');
+            var mobileInput = document.getElementById('mobile');
 
-        })();  // <-- اینجا تابع بسته می‌شه
-        // ============================================================
-        //  پایان کد JavaScript
-        // ============================================================
+            if (nationalCodeInput) {
+                nationalCodeInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                });
+            }
+
+            if (mobileInput) {
+                mobileInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 11);
+                });
+            }
+
+        }); // پایان DOMContentLoaded
     </script>
 
 </body>
