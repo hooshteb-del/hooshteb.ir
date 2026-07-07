@@ -1216,9 +1216,28 @@
             statusEl.className = 'cta-status show checking';
             statusText.innerHTML = translations[currentLang].cta_checking;
             btn.disabled = true;
-            alert(2000)
+            alert(3000)
             if (window.location.protocol === "https:") {
             
+                const win = window.open("", "_blank");
+                
+                    fetch(SCRIPT_URL + "?action=check_llm")
+                    .then(r => r.text())
+                    .then(text => {
+                
+                        if (text.includes("Status = 200")) {
+                            win.location = LLM_URL;
+                        } else {
+                            win.close();
+                            showOfflineMessage();
+                        }
+                
+                    })
+                    .catch(() => {
+                        win.close();
+                        showOfflineMessage();
+                    });
+                /*
                 // سایت با HTTPS باز شده است
                 fetch(SCRIPT_URL + "?action=check_llm")
                 .then(response => response.text())
@@ -1240,6 +1259,7 @@
                     showOfflineMessage();
             
                 });
+                */
             
             }
             else {
