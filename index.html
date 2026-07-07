@@ -307,6 +307,7 @@
             font-weight: 500;
         }
 
+        /* Responsive */
         @media (max-width: 640px) {
             .container {
                 padding: 28px 18px;
@@ -333,6 +334,7 @@
             }
         }
 
+        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -352,38 +354,46 @@
 <body>
 
     <div class="container">
+        <!-- Header -->
         <div class="header">
             <div class="logo-icon"><i class="fas fa-brain"></i></div>
             <h1>هوش<span>‌طب</span></h1>
             <p>پذیرش هوشمند پزشکی &bull; اطلاعات خود را قبل از ویزیت ثبت کنید</p>
         </div>
 
+        <!-- Form -->
         <form id="appointmentForm" class="form-grid">
+            <!-- کد ملی -->
             <div class="form-group">
                 <label><i class="fas fa-id-card"></i> کد ملی <span class="required">*</span></label>
                 <input type="text" id="nationalCode" placeholder="۱۲۳۴۵۶۷۸۹۰" maxlength="10" required />
             </div>
 
+            <!-- نام و نام خانوادگی -->
             <div class="form-group">
                 <label><i class="fas fa-user"></i> نام و نام خانوادگی <span class="required">*</span></label>
                 <input type="text" id="fullName" placeholder="رضا محمدی" required />
             </div>
 
+            <!-- شماره موبایل -->
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> شماره موبایل <span class="required">*</span></label>
                 <input type="tel" id="mobile" placeholder="۰۹۱۲۳۴۵۶۷۸۹" maxlength="11" required />
             </div>
 
+            <!-- نام پزشک -->
             <div class="form-group">
                 <label><i class="fas fa-user-md"></i> نام پزشک <span class="required">*</span></label>
                 <input type="text" id="doctorName" placeholder="دکتر علی حسینی" required />
             </div>
 
+            <!-- تاریخ ویزیت -->
             <div class="form-group">
                 <label><i class="fas fa-calendar-alt"></i> تاریخ ویزیت <span class="required">*</span></label>
                 <input type="date" id="visitDate" required />
             </div>
 
+            <!-- مشخصات فردی -->
             <div class="form-group">
                 <label><i class="fas fa-venus-mars"></i> جنسیت</label>
                 <select id="gender">
@@ -393,11 +403,13 @@
                 </select>
             </div>
 
+            <!-- شرح حال -->
             <div class="form-group full-width">
                 <label><i class="fas fa-notes-medical"></i> شرح حال و علائم <span class="required">*</span></label>
                 <textarea id="description" placeholder="لطفاً علائم، سابقه بیماری، داروهای مصرفی و هر نکته مهم را شرح دهید..." required></textarea>
             </div>
 
+            <!-- نوع ویزیت -->
             <div class="form-group full-width">
                 <label><i class="fas fa-stethoscope"></i> نوع ویزیت <span class="required">*</span></label>
                 <div class="visit-type-group">
@@ -412,11 +424,13 @@
                 </div>
             </div>
 
+            <!-- Status Message -->
             <div id="statusMessage" class="status-message">
                 <i class="fas fa-info-circle"></i>
                 <span id="statusText">پیام وضعیت</span>
             </div>
 
+            <!-- Submit -->
             <button type="submit" class="btn-submit" id="submitBtn">
                 <i class="fas fa-paper-plane"></i>
                 ثبت نوبت
@@ -431,71 +445,66 @@
     </div>
 
     <script>
-        // ============================================================
-        //  راه حل 1: قرار دادن اسکریپت در انتهای body (همین الان هست)
-        //  و استفاده از DOMContentLoaded
-        // ============================================================
-        
-        // آدرس Web App خودت رو اینجا قرار بده
-        var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXuLF5yHJXxKC_wQrToKpYTIaeWMzyHMJiBpKd25paSRMsyi3WMjD5AynYNPztwobC/exec';
+        (function() {
+            // ============================================================
+            //  CONFIG – جایگزین با مقادیر واقعی خودت
+            // ============================================================
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXuLF5yHJXxKC_wQrToKpYTIaeWMzyHMJiBpKd25paSRMsyi3WMjD5AynYNPztwobC/exec';
+            // ↑ این آدرس رو بعد از deploy کردن Google Apps Script اینجا قرار بده
 
-        // صبر می‌کنیم تا DOM کامل بارگذاری شود
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // گرفتن عناصر
-            var form = document.getElementById('appointmentForm');
-            var statusMsg = document.getElementById('statusMessage');
-            var statusText = document.getElementById('statusText');
-            var submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('appointmentForm');
+            const statusMsg = document.getElementById('statusMessage');
+            const statusText = document.getElementById('statusText');
+            const submitBtn = document.getElementById('submitBtn');
 
-            // بررسی اینکه عناصر پیدا شدند
-            if (!form) {
-                console.error('❌ فرم پیدا نشد!');
-                return;
-            }
-            if (!statusMsg || !statusText || !submitBtn) {
-                console.error('❌ برخی از عناصر فرم پیدا نشدند!');
-                return;
-            }
-
-            function setStatus(message, type) {
+            // ============================================================
+            //  Helper: نمایش پیام وضعیت
+            // ============================================================
+            function setStatus(message, type = 'loading') {
                 statusMsg.className = 'status-message ' + type;
                 statusText.textContent = message;
+                // اگر type 'loading' نباشه، بعد از ۶ ثانیه مخفی میشه
                 if (type !== 'loading') {
                     clearTimeout(window.statusTimeout);
-                    window.statusTimeout = setTimeout(function() {
+                    window.statusTimeout = setTimeout(() => {
                         statusMsg.className = 'status-message';
                     }, 6000);
                 }
             }
 
+            // ============================================================
+            //  Helper: اعتبارسنجی کد ملی (ساده)
+            // ============================================================
             function validateNationalCode(code) {
                 if (!/^\d{10}$/.test(code)) return false;
-                var check = parseInt(code[9]);
-                var sum = 0;
-                for (var i = 0; i < 9; i++) {
+                // الگوریتم ساده کنترل – برای نسخه‌ی تولیدی جدی‌تر بگیر
+                const check = parseInt(code[9]);
+                let sum = 0;
+                for (let i = 0; i < 9; i++) {
                     sum += parseInt(code[i]) * (10 - i);
                 }
-                var remainder = sum % 11;
+                const remainder = sum % 11;
                 if (remainder < 2) return check === remainder;
                 return check === (11 - remainder);
             }
 
             // ============================================================
-            //  Event Listener فرم - خط 55 قبلی اینجا اصلاح شده
+            //  ارسال فرم به Google Sheets
             // ============================================================
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                var nationalCode = document.getElementById('nationalCode').value.trim();
-                var fullName = document.getElementById('fullName').value.trim();
-                var mobile = document.getElementById('mobile').value.trim();
-                var doctorName = document.getElementById('doctorName').value.trim();
-                var visitDate = document.getElementById('visitDate').value;
-                var gender = document.getElementById('gender').value;
-                var description = document.getElementById('description').value.trim();
-                var visitType = document.querySelector('input[name="visitType"]:checked');
+                // ۱. گرفتن مقادیر
+                const nationalCode = document.getElementById('nationalCode').value.trim();
+                const fullName = document.getElementById('fullName').value.trim();
+                const mobile = document.getElementById('mobile').value.trim();
+                const doctorName = document.getElementById('doctorName').value.trim();
+                const visitDate = document.getElementById('visitDate').value;
+                const gender = document.getElementById('gender').value;
+                const description = document.getElementById('description').value.trim();
+                const visitType = document.querySelector('input[name="visitType"]:checked');
 
+                // ۲. اعتبارسنجی ساده
                 if (!nationalCode || !fullName || !mobile || !doctorName || !visitDate || !description || !visitType) {
                     setStatus('لطفاً تمام فیلدهای ضروری (ستاره‌دار) را پر کنید.', 'error');
                     return;
@@ -511,93 +520,90 @@
                     return;
                 }
 
-                var data = {
-                    nationalCode: nationalCode,
-                    fullName: fullName,
-                    mobile: mobile,
-                    doctorName: doctorName,
-                    visitDate: visitDate,
+                // ۳. آماده‌سازی داده
+                const data = {
+                    nationalCode,
+                    fullName,
+                    mobile,
+                    doctorName,
+                    visitDate,
                     gender: gender || 'نامشخص',
-                    description: description,
+                    description,
                     visitType: visitType.value,
                     timestamp: new Date().toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
                 };
 
-                setStatus('در حال ثبت اطلاعات...', 'loading');
+                // ۴. نمایش وضعیت در حال ارسال
+                setStatus('در حال ثبت اطلاعات در گوگل شیت...', 'loading');
                 submitBtn.disabled = true;
 
                 try {
-                    var formData = new URLSearchParams();
-                    for (var key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            formData.append(key, data[key]);
-                        }
-                    }
-
-                    var response = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: formData.toString()
+                
+                    const formData = new FormData();
+                
+                    Object.keys(data).forEach(key => {
+                        formData.append(key, data[key]);
                     });
-
-                    var result = await response.json();
-                    console.log('پاسخ:', result);
-
+                
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                
+                    const result = await response.json();
+                
+                    console.log(result);
+                
                     if (result.result === "success") {
-                        setStatus('✅ اطلاعات با موفقیت ثبت شد!', 'success');
+                
+                        setStatus('✅ اطلاعات با موفقیت ثبت شد.', 'success');
+                
                         form.reset();
-                        var radios = document.querySelectorAll('input[name="visitType"]');
-                        for (var i = 0; i < radios.length; i++) {
-                            radios[i].checked = false;
-                        }
+                
+                        document.querySelectorAll('input[name="visitType"]').forEach(r => r.checked = false);
+                
                     } else {
+                
                         setStatus('❌ ' + (result.error || 'خطای ناشناخته'), 'error');
+                
                     }
-
+                
                 } catch (error) {
-                    console.error('خطا:', error);
-                    setStatus('❌ خطا در ارتباط با سرور: ' + error.message, 'error');
+                
+                    console.error(error);
+                
+                    setStatus('❌ ' + error.message, 'error');
+                
                 } finally {
+                
                     submitBtn.disabled = false;
+                
                 }
-            });
 
             // ============================================================
-            //  تنظیم تاریخ پیش‌فرض
+            //  تنظیم تاریخ پیش‌فرض (فردا)
             // ============================================================
-            (function() {
-                var dateInput = document.getElementById('visitDate');
-                if (dateInput) {
-                    var tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    var year = tomorrow.getFullYear();
-                    var month = String(tomorrow.getMonth() + 1).padStart(2, '0');
-                    var day = String(tomorrow.getDate()).padStart(2, '0');
-                    dateInput.value = year + '-' + month + '-' + day;
-                }
+            (function setDefaultDate() {
+                const dateInput = document.getElementById('visitDate');
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const year = tomorrow.getFullYear();
+                const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+                const day = String(tomorrow.getDate()).padStart(2, '0');
+                dateInput.value = `${year}-${month}-${day}`;
             })();
 
             // ============================================================
-            //  محدودیت ورودی
+            //  محدودیت ورودی کد ملی و موبایل (فقط عدد)
             // ============================================================
-            var nationalCodeInput = document.getElementById('nationalCode');
-            var mobileInput = document.getElementById('mobile');
+            document.getElementById('nationalCode').addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+            document.getElementById('mobile').addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 11);
+            });
 
-            if (nationalCodeInput) {
-                nationalCodeInput.addEventListener('input', function() {
-                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
-                });
-            }
-
-            if (mobileInput) {
-                mobileInput.addEventListener('input', function() {
-                    this.value = this.value.replace(/\D/g, '').slice(0, 11);
-                });
-            }
-
-        }); // پایان DOMContentLoaded
+        })();
     </script>
 
 </body>
