@@ -1217,6 +1217,27 @@
             statusText.innerHTML = translations[currentLang].cta_checking;
             btn.disabled = true;
         
+            fetch(SCRIPT_URL + "?action=check_llm")
+            .then(r => r.json())
+            .then(function(result){
+            
+                if(result.online){
+            
+                    window.open(LLM_URL, "_blank");
+            
+                }else{
+            
+                    showOfflineMessage();
+            
+                }
+            
+            })
+            .catch(function(){
+            
+                showOfflineMessage();
+            
+            });
+            /*
             fetch(LLM_URL + '/is_access_hooshteb', {
                 method: 'GET',
                 cache: 'no-cache'
@@ -1233,16 +1254,17 @@
                     showOnlineMessage();
                 }
             })
-        .catch(function(error) {
-            alert(1000)
-            btn.disabled = false;
+           .catch(function(error) {
+              alert(1000)
+              btn.disabled = false;
         
-            alert(error.name + "\n" + error.message);
+              alert(error.name + "\n" + error.message);
         
-            console.error(error);
+              console.error(error);
         
-            showOfflineMessage();
-        });
+              showOfflineMessage();
+           });
+           */
             
         }        
         // ============================================================
