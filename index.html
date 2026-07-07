@@ -1226,19 +1226,15 @@
                 
                 if (response.ok) {
                     // سرور پاسخ OK داده
-                    alert(-1)
                     window.open(LLM_URL, '_blank');
                 } else {
                     // سرور پاسخ داده ولی OK نیست (مثلاً 500)
                     // باز هم آنلاین است، چون اتصال برقرار شده
-                    alert(-2)
                     showOnlineMessage();
-                    alert(-3)
-                    window.open(LLM_URL, '_blank');
                 }
             })
         .catch(function(error) {
-            alert(0)
+            alert(1000)
             btn.disabled = false;
         
             alert(error.name + "\n" + error.message);
