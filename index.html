@@ -1216,28 +1216,32 @@
             statusEl.className = 'cta-status show checking';
             statusText.innerHTML = translations[currentLang].cta_checking;
             btn.disabled = true;
-            alert(5000)
+            alert(6000)
             fetch(SCRIPT_URL + "?action=check_llm")
-            .then(r => r.json())
-            .then(function(result){
+            .then(response => response.text())
+            .then(text => {
             
-                if(result.online){
+                console.log(text);
+            
+                if (text.includes("Status = 200")) {
             
                     window.open(LLM_URL, "_blank");
             
-                }else{
+                } else {
             
                     showOfflineMessage();
             
                 }
             
             })
-            .catch(function(){
+            .catch(function(error){
             
-                alert(1000)
+                console.error(error);
+            
                 showOfflineMessage();
             
             });
+            
             /*
             fetch(LLM_URL + '/is_access_hooshteb', {
                 method: 'GET',
