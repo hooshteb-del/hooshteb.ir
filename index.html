@@ -1245,11 +1245,11 @@
 
             // تلاش برای لود یک تصویر کوچک از سرور
             // می‌توانید از favicon.ico یا هر فایل دیگری استفاده کنید
-            alert(-1)
+            alert(-10)
             img.src = '/static/favicon.ico?_=' + Date.now();
-            alert(-2)
+            alert(-20)
             console.log(img.src);
-            alert(-3)
+            alert(-30)
             // اگر فاولین نبود، از آدرس IP استفاده کن
             // در برخی سرورها favicon.ico وجود ندارد
             setTimeout(function() {
@@ -1267,11 +1267,11 @@
                         showOfflineMessage();
                         btn.disabled = false;
                     };
-                    alert(-4)
+                    alert(-40)
                     img2.src = '/static/favicon.ico?_=' + Date.now();
-                    alert(-5)
+                    alert(-50)
                     console.log(img2.src);
-                    alert(-6)
+                    alert(-60)
                 }
             }, 2000);
         }
