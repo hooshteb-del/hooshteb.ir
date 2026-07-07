@@ -916,6 +916,7 @@
         // ============================================================
         var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5Ue-bzD-4a-DIgU6ojLd121DNl6TSZI16cT9YAGoEe_dpSzpvD3yxM_YBpIXZItD9/exec';
         var LLM_URL = 'http://llm.hooshteb.ir';
+        var LLM_IP_URL = 'http://85.198.28.22:7302';
 
         // ============================================================
         //  دیکشنری چند زبانه
@@ -1206,88 +1207,66 @@
         })();
 
         // ============================================================
-        //  بررسی وضعیت مدل زبانی هوش طب
+        //  بررسی وضعیت مدل زبانی هوش طب با Image (دقیق‌ترین روش)
         // ============================================================
         function checkAndEnterHooshteb() {
             var statusEl = document.getElementById('ctaStatus');
             var statusText = document.getElementById('ctaStatusText');
             var btn = document.getElementById('enterBtn');
+            var isAvailable = false;
 
-            // نمایش پیام در حال بررسی
             statusEl.className = 'cta-status show checking';
             statusText.innerHTML = translations[currentLang].cta_checking;
             btn.disabled = true;
 
-            // روش 1: بررسی با fetch
-            var controller = new AbortController();
-            var timeoutId = setTimeout(function() {
-                controller.abort();
+            // ایجاد تصویر مخفی برای بررسی
+            var img = new Image();
+            var timeout = setTimeout(function() {
+                img.src = '';
+                // اگر timeout شد، سرور در دسترس نیست
+                showOfflineMessage();
+                btn.disabled = false;
             }, 5000);
 
-            fetch(LLM_URL, {
-                method: 'HEAD',
-                mode: 'no-cors',
-                signal: controller.signal
-            })
-            .then(function() {
-                clearTimeout(timeoutId);
-                // با no-cors نمی‌توانیم وضعیت واقعی را بخوانیم
-                // بنابراین با روش دوم (Image) بررسی می‌کنیم
-                return checkWithImage();
-            })
-            .then(function(isAvailable) {
-                if (isAvailable) {
-                    showOnlineMessage();
-                    window.open(LLM_URL, '_blank');
-                } else {
-                    showOfflineMessage();
-                }
-            })
-            .catch(function() {
-                clearTimeout(timeoutId);
-                // اگر خطا رخ داد، با روش دوم امتحان می‌کنیم
-                checkWithImage()
-                    .then(function(isAvailable) {
-                        if (isAvailable) {
-                            showOnlineMessage();
-                            window.open(LLM_URL, '_blank');
-                        } else {
-                            showOfflineMessage();
-                        }
-                    })
-                    .catch(function() {
+            img.onload = function() {
+                clearTimeout(timeout);
+                // تصویر لود شد یعنی سرور در دسترس است
+                showOnlineMessage();
+                window.open(LLM_URL, '_blank');
+                btn.disabled = false;
+            };
+
+            img.onerror = function() {
+                clearTimeout(timeout);
+                // تصویر لود نشد، سرور در دسترس نیست
+                showOfflineMessage();
+                btn.disabled = false;
+            };
+
+            // تلاش برای لود یک تصویر کوچک از سرور
+            // می‌توانید از favicon.ico یا هر فایل دیگری استفاده کنید
+            img.src = LLM_URL + '/favicon.ico?_=' + Date.now();
+            
+            // اگر فاولین نبود، از آدرس IP استفاده کن
+            // در برخی سرورها favicon.ico وجود ندارد
+            setTimeout(function() {
+                if (!img.complete && !img.naturalWidth) {
+                    // اگر favicon لود نشد، با آدرس IP امتحان کن
+                    var img2 = new Image();
+                    img2.onload = function() {
+                        clearTimeout(timeout);
+                        showOnlineMessage();
+                        window.open(LLM_URL, '_blank');
+                        btn.disabled = false;
+                    };
+                    img2.onerror = function() {
+                        clearTimeout(timeout);
                         showOfflineMessage();
-                    });
-            })
-            .finally(function() {
-                setTimeout(function() {
-                    btn.disabled = false;
-                }, 2000);
-            });
-        }
-
-        // ============================================================
-        //  بررسی با استفاده از Image (روش جایگزین)
-        // ============================================================
-        function checkWithImage() {
-            return new Promise(function(resolve) {
-                var img = new Image();
-                var timeout = setTimeout(function() {
-                    img.src = '';
-                    resolve(false);
-                }, 4000);
-
-                img.onload = function() {
-                    clearTimeout(timeout);
-                    resolve(true);
-                };
-                img.onerror = function() {
-                    clearTimeout(timeout);
-                    resolve(false);
-                };
-                // استفاده از favicon برای بررسی
-                img.src = LLM_URL + '/favicon.ico?_=' + Date.now();
-            });
+                        btn.disabled = false;
+                    };
+                    img2.src = LLM_IP_URL + '/favicon.ico?_=' + Date.now();
+                }
+            }, 2000);
         }
 
         // ============================================================
