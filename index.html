@@ -1216,7 +1216,7 @@
             statusEl.className = 'cta-status show checking';
             statusText.innerHTML = translations[currentLang].cta_checking;
             btn.disabled = true;
-        
+            alert(2000)
             fetch(SCRIPT_URL + "?action=check_llm")
             .then(r => r.json())
             .then(function(result){
