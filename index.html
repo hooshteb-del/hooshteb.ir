@@ -540,33 +540,23 @@
                 try {
                     const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        mode: 'cors',  // تغییر از no-cors به cors
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(data),
+                        body: JSON.stringify(data)
                     });
-
-                    // حالا می‌تونیم پاسخ رو بررسی کنیم
-                    if (response.ok) {
-                        const result = await response.json();
-                        if (result.result === 'success') {
-                            setStatus('✅ اطلاعات با موفقیت ثبت شد! منتظر تأیید پزشک باشید.', 'success');
-                            form.reset();
-                            document.querySelectorAll('input[name="visitType"]').forEach(r => r.checked = false);
-                        } else {
-                            setStatus('❌ خطا در ثبت اطلاعات: ' + (result.error || 'خطای ناشناخته'), 'error');
-                        }
-                    } else {
-                        setStatus('❌ خطا در ارتباط با سرور (کد ' + response.status + ')', 'error');
-                    }
+                
+                    console.log("Status:", response.status);
+                
+                    const text = await response.text();
+                    console.log("Response:", text);
+                
+                    alert(text);
+                
                 } catch (error) {
-                    console.error('خطا در ارسال:', error);
-                    setStatus('❌ خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.', 'error');
-                } finally {
-                    submitBtn.disabled = false;
+                    console.error(error);
+                    alert(error);
                 }
-            });
 
             // ============================================================
             //  تنظیم تاریخ پیش‌فرض (فردا)
