@@ -1213,69 +1213,36 @@
             var statusEl = document.getElementById('ctaStatus');
             var statusText = document.getElementById('ctaStatusText');
             var btn = document.getElementById('enterBtn');
-            var isAvailable = false;
-
+        
             statusEl.className = 'cta-status show checking';
             statusText.innerHTML = translations[currentLang].cta_checking;
             btn.disabled = true;
-
-            // ایجاد تصویر مخفی برای بررسی
-            var img = new Image();
-            var timeout = setTimeout(function() {
-                img.src = '';
-                // اگر timeout شد، سرور در دسترس نیست
-                showOfflineMessage();
+        
+            fetch(LLM_URL + '/is_access_hooshteb', {
+                method: 'GET',
+                cache: 'no-cache'
+            })
+            .then(function(response) {
                 btn.disabled = false;
-            }, 5000);
-
-            img.onload = function() {
-                clearTimeout(timeout);
-                // تصویر لود شد یعنی سرور در دسترس است
-                showOnlineMessage();
-                window.open(LLM_URL, '_blank');
-                btn.disabled = false;
-            };
-
-            img.onerror = function() {
-                clearTimeout(timeout);
-                // تصویر لود نشد، سرور در دسترس نیست
-                showOfflineMessage();
-                btn.disabled = false;
-            };
-
-            // تلاش برای لود یک تصویر کوچک از سرور
-            // می‌توانید از favicon.ico یا هر فایل دیگری استفاده کنید
-            alert(-1)
-            img.src = LLM_IP_URL+'/static/favicon.ico?_=' + Date.now();
-            alert(-2)
-            alert(img.src);
-            alert(-3)
-            // اگر فاولین نبود، از آدرس IP استفاده کن
-            // در برخی سرورها favicon.ico وجود ندارد
-            setTimeout(function() {
-                if (!img.complete && !img.naturalWidth) {
-                    // اگر favicon لود نشد، با آدرس IP امتحان کن
-                    var img2 = new Image();
-                    img2.onload = function() {
-                        clearTimeout(timeout);
-                        showOnlineMessage();
-                        window.open(LLM_URL, '_blank');
-                        btn.disabled = false;
-                    };
-                    img2.onerror = function() {
-                        clearTimeout(timeout);
-                        showOfflineMessage();
-                        btn.disabled = false;
-                    };
-                    alert(-4)
-                    img2.src = LLM_IP_URL+'/static/favicon.ico?_=' + Date.now();
-                    alert(-5)
-                    alert(img2.src);
-                    alert(-6)
+                
+                if (response.ok) {
+                    // سرور پاسخ OK داده
+                    showOnlineMessage();
+                    window.open(LLM_URL, '_blank');
+                } else {
+                    // سرور پاسخ داده ولی OK نیست (مثلاً 500)
+                    // باز هم آنلاین است، چون اتصال برقرار شده
+                    showOnlineMessage();
+                    window.open(LLM_URL, '_blank');
                 }
-            }, 2000);
-        }
-
+            })
+            .catch(function(error) {
+                // سرور پاسخ نداد
+                btn.disabled = false;
+                console.log('خطا در ارتباط با سرور:', error);
+                showOfflineMessage();
+            });
+        }        
         // ============================================================
         //  نمایش پیام آنلاین بودن
         // ============================================================
