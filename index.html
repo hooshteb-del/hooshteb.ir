@@ -432,20 +432,28 @@
 
     <script>
         // ============================================================
-        //  صبر می‌کنیم تا DOM کامل بارگذاری شود
+        //  راه حل 1: قرار دادن اسکریپت در انتهای body (همین الان هست)
+        //  و استفاده از DOMContentLoaded
         // ============================================================
+        
+        // آدرس Web App خودت رو اینجا قرار بده
+        var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXuLF5yHJXxKC_wQrToKpYTIaeWMzyHMJiBpKd25paSRMsyi3WMjD5AynYNPztwobC/exec';
+
+        // صبر می‌کنیم تا DOM کامل بارگذاری شود
         document.addEventListener('DOMContentLoaded', function() {
             
-            // آدرس Web App خودت رو اینجا قرار بده
-            var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXuLF5yHJXxKC_wQrToKpYTIaeWMzyHMJiBpKd25paSRMsyi3WMjD5AynYNPztwobC/exec';
-
+            // گرفتن عناصر
             var form = document.getElementById('appointmentForm');
             var statusMsg = document.getElementById('statusMessage');
             var statusText = document.getElementById('statusText');
             var submitBtn = document.getElementById('submitBtn');
 
             // بررسی اینکه عناصر پیدا شدند
-            if (!form || !statusMsg || !statusText || !submitBtn) {
+            if (!form) {
+                console.error('❌ فرم پیدا نشد!');
+                return;
+            }
+            if (!statusMsg || !statusText || !submitBtn) {
                 console.error('❌ برخی از عناصر فرم پیدا نشدند!');
                 return;
             }
@@ -473,6 +481,9 @@
                 return check === (11 - remainder);
             }
 
+            // ============================================================
+            //  Event Listener فرم - خط 55 قبلی اینجا اصلاح شده
+            // ============================================================
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
@@ -553,7 +564,9 @@
                 }
             });
 
-            // تنظیم تاریخ پیش‌فرض
+            // ============================================================
+            //  تنظیم تاریخ پیش‌فرض
+            // ============================================================
             (function() {
                 var dateInput = document.getElementById('visitDate');
                 if (dateInput) {
@@ -566,7 +579,9 @@
                 }
             })();
 
-            // محدودیت ورودی
+            // ============================================================
+            //  محدودیت ورودی
+            // ============================================================
             var nationalCodeInput = document.getElementById('nationalCode');
             var mobileInput = document.getElementById('mobile');
 
