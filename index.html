@@ -538,24 +538,46 @@
                 submitBtn.disabled = true;
 
                 try {
-                    const response = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
+                
+                    const formData = new FormData();
+                
+                    Object.keys(data).forEach(key => {
+                        formData.append(key, data[key]);
                     });
                 
-                    console.log("Status:", response.status);
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
                 
-                    const text = await response.text();
-                    console.log("Response:", text);
+                    const result = await response.json();
                 
-                    alert(text);
+                    console.log(result);
+                
+                    if (result.result === "success") {
+                
+                        setStatus('✅ اطلاعات با موفقیت ثبت شد.', 'success');
+                
+                        form.reset();
+                
+                        document.querySelectorAll('input[name="visitType"]').forEach(r => r.checked = false);
+                
+                    } else {
+                
+                        setStatus('❌ ' + (result.error || 'خطای ناشناخته'), 'error');
+                
+                    }
                 
                 } catch (error) {
+                
                     console.error(error);
-                    alert(error);
+                
+                    setStatus('❌ ' + error.message, 'error');
+                
+                } finally {
+                
+                    submitBtn.disabled = false;
+                
                 }
 
             // ============================================================
