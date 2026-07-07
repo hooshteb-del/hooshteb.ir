@@ -10,6 +10,8 @@
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
     <style>
         /* ===== Reset & Base ===== */
@@ -28,12 +30,73 @@
             background: #f8fafc;
             color: #0b1e33;
             line-height: 1.7;
+            transition: all 0.3s ease;
+        }
+
+        /* زبان فارسی */
+        body.lang-fa {
+            font-family: 'Vazirmatn', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+
+        /* زبان انگلیسی */
+        body.lang-en {
+            font-family: 'Inter', sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+
+        /* زبان عربی */
+        body.lang-ar {
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            text-align: right;
         }
 
         .container {
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 20px;
+        }
+
+        /* ===== Language Switcher ===== */
+        .lang-switcher {
+            display: flex;
+            gap: 4px;
+            background: #eef2f6;
+            padding: 4px;
+            border-radius: 30px;
+        }
+
+        .lang-switcher button {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #4a5b6e;
+            font-family: inherit;
+        }
+
+        .lang-switcher button:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+        }
+
+        .lang-switcher button.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .lang-switcher button .lang-label {
+            font-size: 10px;
+            opacity: 0.7;
+            display: block;
         }
 
         /* ===== Header / Navbar ===== */
@@ -49,38 +112,38 @@
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
         }
 
-            .navbar .container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 12px;
-            }
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
 
-            .navbar .logo {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 26px;
-                font-weight: 900;
-                color: #0b1e33;
-                text-decoration: none;
-            }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 26px;
+            font-weight: 900;
+            color: #0b1e33;
+            text-decoration: none;
+        }
 
-                .navbar .logo i {
-                    font-size: 32px;
-                    background: linear-gradient(135deg, #2563eb, #7c3aed);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
+        .navbar .logo i {
+            font-size: 32px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-                .navbar .logo span {
-                    background: linear-gradient(135deg, #2563eb, #7c3aed);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
+        .navbar .logo span {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         .nav-links {
             display: flex;
@@ -89,34 +152,34 @@
             flex-wrap: wrap;
         }
 
-            .nav-links a {
-                color: #4a5b6e;
-                text-decoration: none;
-                font-size: 14px;
-                font-weight: 500;
-                padding: 8px 16px;
-                border-radius: 30px;
-                transition: all 0.2s ease;
-            }
+        .nav-links a {
+            color: #4a5b6e;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: all 0.2s ease;
+        }
 
-                .nav-links a:hover {
-                    background: #eef2f6;
-                    color: #2563eb;
-                }
+        .nav-links a:hover {
+            background: #eef2f6;
+            color: #2563eb;
+        }
 
-            .nav-links .btn-primary-nav {
-                background: linear-gradient(135deg, #2563eb, #7c3aed);
-                color: white;
-                padding: 8px 22px;
-                border-radius: 30px;
-                font-weight: 600;
-            }
+        .nav-links .btn-primary-nav {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            padding: 8px 22px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
 
-                .nav-links .btn-primary-nav:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
-                    background: linear-gradient(135deg, #1d4ed8, #6d28d9);
-                }
+        .nav-links .btn-primary-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+            background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+        }
 
         /* ===== Hero / About ===== */
         .hero {
@@ -124,61 +187,61 @@
             text-align: center;
         }
 
-            .hero .badge {
-                display: inline-block;
-                background: #dbeafe;
-                color: #1d4ed8;
-                font-size: 13px;
-                font-weight: 600;
-                padding: 4px 18px;
-                border-radius: 30px;
-                margin-bottom: 16px;
-            }
+        .hero .badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 18px;
+            border-radius: 30px;
+            margin-bottom: 16px;
+        }
 
-            .hero h1 {
-                font-size: 44px;
-                font-weight: 900;
-                line-height: 1.2;
-                margin-bottom: 16px;
-            }
+        .hero h1 {
+            font-size: 44px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
 
-                .hero h1 span {
-                    background: linear-gradient(135deg, #2563eb, #7c3aed);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
+        .hero h1 span {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-            .hero p {
-                font-size: 18px;
-                color: #4a5b6e;
-                max-width: 700px;
-                margin: 0 auto 24px;
-            }
+        .hero p {
+            font-size: 18px;
+            color: #4a5b6e;
+            max-width: 700px;
+            margin: 0 auto 24px;
+        }
 
-            .hero .features {
-                display: flex;
-                justify-content: center;
-                gap: 30px;
-                flex-wrap: wrap;
-                margin-top: 20px;
-            }
+        .hero .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
 
-                .hero .features .feat {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 14px;
-                    color: #1e2b3c;
-                    background: white;
-                    padding: 8px 20px;
-                    border-radius: 30px;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                }
+        .hero .features .feat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #1e2b3c;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
 
-                    .hero .features .feat i {
-                        color: #2563eb;
-                    }
+        .hero .features .feat i {
+            color: #2563eb;
+        }
 
         /* ===== Sections ===== */
         section {
@@ -186,9 +249,9 @@
             border-bottom: 1px solid #e9edf2;
         }
 
-            section:last-of-type {
-                border-bottom: none;
-            }
+        section:last-of-type {
+            border-bottom: none;
+        }
 
         .section-title {
             font-size: 30px;
@@ -197,10 +260,10 @@
             text-align: center;
         }
 
-            .section-title i {
-                color: #2563eb;
-                margin-left: 10px;
-            }
+        .section-title i {
+            color: #2563eb;
+            margin-left: 10px;
+        }
 
         .section-desc {
             text-align: center;
@@ -226,62 +289,62 @@
             transition: all 0.3s ease;
         }
 
-            .card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-                border-color: #dbeafe;
-            }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            border-color: #dbeafe;
+        }
 
-            .card .icon {
-                font-size: 36px;
-                margin-bottom: 12px;
-                display: inline-block;
-                background: #eff6ff;
-                padding: 12px;
-                border-radius: 16px;
-                color: #2563eb;
-            }
+        .card .icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+            display: inline-block;
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 16px;
+            color: #2563eb;
+        }
 
-            .card h3 {
-                font-size: 18px;
-                font-weight: 700;
-                margin-bottom: 8px;
-            }
+        .card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
 
-            .card p {
-                color: #4a5b6e;
-                font-size: 14px;
-                margin-bottom: 16px;
-            }
+        .card p {
+            color: #4a5b6e;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
 
-            .card .btn-card {
-                display: inline-block;
-                padding: 8px 24px;
-                border-radius: 30px;
-                font-size: 14px;
-                font-weight: 600;
-                text-decoration: none;
-                transition: all 0.2s ease;
-                border: 2px solid #2563eb;
-                color: #2563eb;
-                background: transparent;
-            }
+        .card .btn-card {
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 2px solid #2563eb;
+            color: #2563eb;
+            background: transparent;
+        }
 
-                .card .btn-card:hover {
-                    background: #2563eb;
-                    color: white;
-                }
+        .card .btn-card:hover {
+            background: #2563eb;
+            color: white;
+        }
 
-                .card .btn-card.primary {
-                    background: linear-gradient(135deg, #2563eb, #7c3aed);
-                    color: white;
-                    border: none;
-                }
+        .card .btn-card.primary {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            border: none;
+        }
 
-                    .card .btn-card.primary:hover {
-                        transform: scale(1.02);
-                        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
-                    }
+        .card .btn-card.primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+        }
 
         /* ===== Form Styles ===== */
         .form-container {
@@ -294,60 +357,60 @@
             border: 1px solid #eef2f6;
         }
 
-            .form-container .form-title {
-                font-size: 20px;
-                font-weight: 700;
-                margin-bottom: 4px;
-            }
+        .form-container .form-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
 
-            .form-container .form-sub {
-                color: #4a5b6e;
-                font-size: 14px;
-                margin-bottom: 24px;
-            }
+        .form-container .form-sub {
+            color: #4a5b6e;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
 
         .form-group {
             margin-bottom: 18px;
         }
 
-            .form-group label {
-                display: block;
-                font-size: 14px;
-                font-weight: 600;
-                margin-bottom: 4px;
-                color: #1e2b3c;
-            }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1e2b3c;
+        }
 
-                .form-group label .required {
-                    color: #ef4444;
-                }
+        .form-group label .required {
+            color: #ef4444;
+        }
 
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                width: 100%;
-                padding: 12px 16px;
-                border: 2px solid #e2e8f0;
-                border-radius: 14px;
-                font-size: 14px;
-                font-family: 'Vazirmatn', sans-serif;
-                transition: all 0.2s ease;
-                background: #fafbfc;
-            }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: #fafbfc;
+        }
 
-                .form-group input:focus,
-                .form-group select:focus,
-                .form-group textarea:focus {
-                    border-color: #2563eb;
-                    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
-                    background: white;
-                    outline: none;
-                }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+            background: white;
+            outline: none;
+        }
 
-            .form-group textarea {
-                min-height: 100px;
-                resize: vertical;
-            }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
 
         .form-row {
             display: grid;
@@ -358,7 +421,7 @@
         .btn-submit-form {
             width: 100%;
             padding: 14px;
-            font-family: 'Vazirmatn', sans-serif;
+            font-family: inherit;
             font-size: 16px;
             font-weight: 700;
             color: white;
@@ -370,16 +433,16 @@
             margin-top: 8px;
         }
 
-            .btn-submit-form:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
-            }
+        .btn-submit-form:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+        }
 
-            .btn-submit-form:disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-                transform: none;
-            }
+        .btn-submit-form:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .status-msg {
             padding: 12px 16px;
@@ -389,26 +452,26 @@
             margin-top: 12px;
         }
 
-            .status-msg.success {
-                display: block;
-                background: #dcfce7;
-                color: #166534;
-                border: 1px solid #86efac;
-            }
+        .status-msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
 
-            .status-msg.error {
-                display: block;
-                background: #fee2e2;
-                color: #991b1b;
-                border: 1px solid #fca5a5;
-            }
+        .status-msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
 
-            .status-msg.loading {
-                display: block;
-                background: #e0e7ff;
-                color: #3730a3;
-                border: 1px solid #a5b4fc;
-            }
+        .status-msg.loading {
+            display: block;
+            background: #e0e7ff;
+            color: #3730a3;
+            border: 1px solid #a5b4fc;
+        }
 
         /* ===== Video Section ===== */
         .video-wrapper {
@@ -421,14 +484,14 @@
             aspect-ratio: 16 / 9;
         }
 
-            .video-wrapper iframe {
-                width: 100%;
-                height: 100%;
-                border: none;
-                display: block;
-            }
+        .video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
 
-        /* ===== CTA Section (ورود به هوش طب) ===== */
+        /* ===== CTA Section ===== */
         .cta-section {
             background: linear-gradient(135deg, #0b1e33, #1a2f4a);
             border-radius: 32px;
@@ -438,44 +501,49 @@
             margin-top: 20px;
         }
 
-            .cta-section h2 {
-                font-size: 32px;
-                font-weight: 800;
-                margin-bottom: 12px;
-            }
+        .cta-section h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
 
-                .cta-section h2 i {
-                    color: #60a5fa;
-                }
+        .cta-section h2 i {
+            color: #60a5fa;
+        }
 
-            .cta-section p {
-                font-size: 16px;
-                opacity: 0.8;
-                max-width: 500px;
-                margin: 0 auto 24px;
-            }
+        .cta-section p {
+            font-size: 16px;
+            opacity: 0.8;
+            max-width: 500px;
+            margin: 0 auto 24px;
+        }
 
-            .cta-section .btn-cta {
-                display: inline-block;
-                padding: 16px 48px;
-                font-size: 18px;
-                font-weight: 700;
-                color: #0b1e33;
-                background: white;
-                border-radius: 30px;
-                text-decoration: none;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-            }
+        .cta-section .btn-cta {
+            display: inline-block;
+            padding: 16px 48px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0b1e33;
+            background: white;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
 
-                .cta-section .btn-cta:hover {
-                    transform: translateY(-3px) scale(1.02);
-                    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-                }
+        .cta-section .btn-cta:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
 
-                .cta-section .btn-cta i {
-                    margin-left: 10px;
-                }
+        .cta-section .btn-cta i {
+            margin-left: 10px;
+        }
+
+        body.lang-en .cta-section .btn-cta i {
+            margin-left: 0;
+            margin-right: 10px;
+        }
 
         /* ===== Footer ===== */
         .footer {
@@ -487,10 +555,10 @@
             margin-top: 20px;
         }
 
-            .footer a {
-                color: #2563eb;
-                text-decoration: none;
-            }
+        .footer a {
+            color: #2563eb;
+            text-decoration: none;
+        }
 
         /* ===== Responsive ===== */
         @media (max-width: 768px) {
@@ -524,12 +592,17 @@
                 padding: 32px 20px;
             }
 
-                .cta-section h2 {
-                    font-size: 24px;
-                }
+            .cta-section h2 {
+                font-size: 24px;
+            }
 
             section {
                 padding: 40px 0;
+            }
+
+            .lang-switcher button {
+                padding: 4px 10px;
+                font-size: 11px;
             }
         }
 
@@ -549,33 +622,65 @@
         }
     </style>
 </head>
-<body>
+<body class="lang-fa">
 
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar">
         <div class="container">
             <a href="#" class="logo">
                 <i class="fas fa-brain"></i>
-                هوش<span>‌طب</span>
+                <span data-i18n="site_name">هوش‌طب</span>
             </a>
             <div class="nav-links">
-                <a href="#about">درباره</a>
-                <a href="#doctors">ثبت پزشکان</a>
-                <a href="#marketers">معرفی‌کنندگان</a>
-                <a href="#demo">دمو</a>
-                <a href="#enter" class="btn-primary-nav">
+                <!-- Language Switcher -->
+                <div class="lang-switcher">
+                    <button class="active" data-lang="fa" onclick="switchLanguage('fa')">
+                        فارسی
+                        <span class="lang-label">FA</span>
+                    </button>
+                    <button data-lang="en" onclick="switchLanguage('en')">
+                        English
+                        <span class="lang-label">EN</span>
+                    </button>
+                    <button data-lang="ar" onclick="switchLanguage('ar')">
+                        العربية
+                        <span class="lang-label">AR</span>
+                    </button>
+                </div>
+
+                <a href="#about" data-i18n="nav_about">درباره</a>
+                <a href="#doctors" data-i18n="nav_doctors">ثبت پزشکان</a>
+                <a href="#marketers" data-i18n="nav_marketers">معرفی‌کنندگان</a>
+                <a href="#demo" data-i18n="nav_demo">دمو</a>
+                <a href="#enter" class="btn-primary-nav" data-i18n="nav_enter">
                     <i class="fas fa-rocket"></i> ورود به هوش طب
                 </a>
             </div>
         </div>
     </nav>
 
+    <!-- ===== ENTER HOOSHTEB ===== -->
+    <section id="enter">
+        <div class="container">
+            <div class="cta-section">
+                <h2><i class="fas fa-robot"></i> <span data-i18n="cta_title">وارد مدل زبانی هوش طب شوید</span></h2>
+                <p data-i18n="cta_desc">
+                    با کلیک بر روی دکمه زیر، وارد <strong>پلتفرم هوش طب</strong> شده و
+                    از خدمات پذیرش هوشمند پزشکی استفاده کنید.
+                </p>
+                <a href="http://llm.hooshteb.ir" target="_blank" class="btn-cta">
+                    <i class="fas fa-arrow-left"></i> <span data-i18n="cta_button">ورود به هوش طب</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- ===== HERO / ABOUT ===== -->
     <section id="about" class="hero">
         <div class="container">
-            <div class="badge"><i class="fas fa-sparkles"></i> پلتفرم پذیرش هوشمند پزشکی</div>
-            <h1>هوش‌طب چیست؟</h1>
-            <p>
+            <div class="badge" data-i18n="hero_badge">پلتفرم پذیرش هوشمند پزشکی</div>
+            <h1><span data-i18n="hero_title">هوش‌طب چیست؟</span></h1>
+            <p data-i18n="hero_desc">
                 <strong>هوش‌طب</strong> یک پلتفرم پذیرش پزشکی مبتنی بر <strong>هوش مصنوعی</strong> است
                 که برای کلینیک‌ها و مطب‌های پزشکی طراحی شده است.
                 این پلتفرم به بیماران اجازه می‌دهد تا قبل از ملاقات با پزشک،
@@ -584,26 +689,10 @@
                 و امکان بررسی اطلاعات بیمار از قبل کمک می‌کند.
             </p>
             <div class="features">
-                <span class="feat"><i class="fas fa-clock"></i> کاهش ۶۰٪ زمان انتظار</span>
-                <span class="feat"><i class="fas fa-stethoscope"></i> مشاوره دقیق‌تر</span>
-                <span class="feat"><i class="fas fa-robot"></i> مبتنی بر هوش مصنوعی</span>
-                <span class="feat"><i class="fas fa-lock"></i> امن و محرمانه</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== ENTER HOOSHTEB ===== -->
-    <section id="enter">
-        <div class="container">
-            <div class="cta-section">
-                <h2><i class="fas fa-robot"></i> وارد مدل زبانی هوش طب شوید</h2>
-                <p>
-                    با کلیک بر روی دکمه زیر، وارد <strong>پلتفرم هوش طب</strong> شده و
-                    از خدمات پذیرش هوشمند پزشکی استفاده کنید.
-                </p>
-                <a href="http://llm.hooshteb.ir" target="_blank" class="btn-cta">
-                    <i class="fas fa-arrow-left"></i> ورود به هوش طب
-                </a>
+                <span class="feat"><i class="fas fa-clock"></i> <span data-i18n="feat_1">کاهش ۶۰٪ زمان انتظار</span></span>
+                <span class="feat"><i class="fas fa-stethoscope"></i> <span data-i18n="feat_2">مشاوره دقیق‌تر</span></span>
+                <span class="feat"><i class="fas fa-robot"></i> <span data-i18n="feat_3">مبتنی بر هوش مصنوعی</span></span>
+                <span class="feat"><i class="fas fa-lock"></i> <span data-i18n="feat_4">امن و محرمانه</span></span>
             </div>
         </div>
     </section>
@@ -611,8 +700,8 @@
     <!-- ===== VIDEO DEMO ===== -->
     <section id="demo">
         <div class="container">
-            <h2 class="section-title"><i class="fas fa-play-circle"></i> فیلم دموی هوش طب</h2>
-            <p class="section-desc">
+            <h2 class="section-title"><i class="fas fa-play-circle"></i> <span data-i18n="demo_title">فیلم دموی هوش طب</span></h2>
+            <p class="section-desc" data-i18n="demo_desc">
                 با مشاهده این فیلم، با <strong>عملکرد مدل زبانی هوش طب</strong> و نحوه استفاده از آن آشنا شوید.
             </p>
             <div class="video-wrapper">
@@ -624,62 +713,62 @@
             </div>
         </div>
     </section>
-    
+
     <!-- ===== REGISTER DOCTORS ===== -->
     <section id="doctors">
         <div class="container">
-            <h2 class="section-title"><i class="fas fa-user-md"></i> ثبت نام پزشکان</h2>
-            <p class="section-desc">
+            <h2 class="section-title"><i class="fas fa-user-md"></i> <span data-i18n="doctors_title">ثبت نام پزشکان</span></h2>
+            <p class="section-desc" data-i18n="doctors_desc">
                 اگر پزشک هستید و می‌خواهید <strong>مدل زبانی هوش طب</strong> را در مطب خود راه‌اندازی کنید،
                 اطلاعات خود را ثبت کنید تا کارشناسان ما با شما تماس بگیرند.
             </p>
             <div class="form-container">
-                <div class="form-title">ثبت نام پزشکان</div>
-                <div class="form-sub">راه‌اندازی مدل زبانی هوش طب در مطب شما</div>
+                <div class="form-title" data-i18n="doctors_form_title">ثبت نام پزشکان</div>
+                <div class="form-sub" data-i18n="doctors_form_sub">راه‌اندازی مدل زبانی هوش طب در مطب شما</div>
                 <form id="doctorForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>نام و نام خانوادگی <span class="required">*</span></label>
+                            <label data-i18n="doctors_fullname">نام و نام خانوادگی <span class="required">*</span></label>
                             <input type="text" id="docFullName" placeholder="دکتر رضا محمدی" required />
                         </div>
                         <div class="form-group">
-                            <label>شماره نظام پزشکی <span class="required">*</span></label>
+                            <label data-i18n="doctors_medical_code">شماره نظام پزشکی <span class="required">*</span></label>
                             <input type="text" id="docMedicalCode" placeholder="۱۲۳۴۵۶" required />
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>تخصص</label>
+                            <label data-i18n="doctors_specialty">تخصص</label>
                             <select id="docSpecialty">
-                                <option value="">انتخاب کنید</option>
-                                <option value="داخلی">داخلی</option>
-                                <option value="قلب و عروق">قلب و عروق</option>
-                                <option value="مغز و اعصاب">مغز و اعصاب</option>
-                                <option value="ارتوپدی">ارتوپدی</option>
-                                <option value="پوست و مو">پوست و مو</option>
-                                <option value="چشم پزشکی">چشم پزشکی</option>
-                                <option value="گوش و حلق و بینی">گوش و حلق و بینی</option>
-                                <option value="روانپزشکی">روانپزشکی</option>
-                                <option value="زنان و زایمان">زنان و زایمان</option>
-                                <option value="کودکان">کودکان</option>
-                                <option value="سایر">سایر</option>
+                                <option value="" data-i18n="select_option">انتخاب کنید</option>
+                                <option value="داخلی" data-i18n="specialty_internal">داخلی</option>
+                                <option value="قلب و عروق" data-i18n="specialty_cardiology">قلب و عروق</option>
+                                <option value="مغز و اعصاب" data-i18n="specialty_neurology">مغز و اعصاب</option>
+                                <option value="ارتوپدی" data-i18n="specialty_orthopedics">ارتوپدی</option>
+                                <option value="پوست و مو" data-i18n="specialty_dermatology">پوست و مو</option>
+                                <option value="چشم پزشکی" data-i18n="specialty_ophthalmology">چشم پزشکی</option>
+                                <option value="گوش و حلق و بینی" data-i18n="specialty_ent">گوش و حلق و بینی</option>
+                                <option value="روانپزشکی" data-i18n="specialty_psychiatry">روانپزشکی</option>
+                                <option value="زنان و زایمان" data-i18n="specialty_obgyn">زنان و زایمان</option>
+                                <option value="کودکان" data-i18n="specialty_pediatrics">کودکان</option>
+                                <option value="سایر" data-i18n="specialty_other">سایر</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>شماره موبایل <span class="required">*</span></label>
+                            <label data-i18n="doctors_mobile">شماره موبایل <span class="required">*</span></label>
                             <input type="tel" id="docMobile" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>آدرس مطب</label>
+                        <label data-i18n="doctors_address">آدرس مطب</label>
                         <input type="text" id="docAddress" placeholder="تهران، خیابان ..." />
                     </div>
                     <div class="form-group">
-                        <label>توضیحات تکمیلی</label>
+                        <label data-i18n="doctors_description">توضیحات تکمیلی</label>
                         <textarea id="docDesc" placeholder="نیازها، تعداد بیماران روزانه، سیستم‌های موجود و ..."></textarea>
                     </div>
                     <button type="submit" class="btn-submit-form" id="docSubmitBtn">
-                        <i class="fas fa-paper-plane"></i> ثبت درخواست
+                        <i class="fas fa-paper-plane"></i> <span data-i18n="doctors_submit">ثبت درخواست</span>
                     </button>
                     <div id="docStatus" class="status-msg"></div>
                 </form>
@@ -690,45 +779,45 @@
     <!-- ===== REGISTER MARKETERS ===== -->
     <section id="marketers">
         <div class="container">
-            <h2 class="section-title"><i class="fas fa-bullhorn"></i> معرفی‌کنندگان هوش طب</h2>
-            <p class="section-desc">
+            <h2 class="section-title"><i class="fas fa-bullhorn"></i> <span data-i18n="marketers_title">معرفی‌کنندگان هوش طب</span></h2>
+            <p class="section-desc" data-i18n="marketers_desc">
                 اگر به <strong>معرفی و توسعه هوش طب</strong> به پزشکان و کلینیک‌ها علاقه‌مند هستید،
                 ثبت نام کنید و از پورسانت ویژه بهره‌مند شوید.
             </p>
             <div class="form-container">
-                <div class="form-title">ثبت نام معرفی‌کنندگان</div>
-                <div class="form-sub">همکاری در توسعه هوش طب و دریافت پورسانت</div>
+                <div class="form-title" data-i18n="marketers_form_title">ثبت نام معرفی‌کنندگان</div>
+                <div class="form-sub" data-i18n="marketers_form_sub">همکاری در توسعه هوش طب و دریافت پورسانت</div>
                 <form id="marketerForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>نام و نام خانوادگی <span class="required">*</span></label>
+                            <label data-i18n="marketers_fullname">نام و نام خانوادگی <span class="required">*</span></label>
                             <input type="text" id="mktFullName" placeholder="علی رضایی" required />
                         </div>
                         <div class="form-group">
-                            <label>شماره موبایل <span class="required">*</span></label>
+                            <label data-i18n="marketers_mobile">شماره موبایل <span class="required">*</span></label>
                             <input type="tel" id="mktMobile" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required />
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>ایمیل</label>
+                            <label data-i18n="marketers_email">ایمیل</label>
                             <input type="email" id="mktEmail" placeholder="ali@example.com" />
                         </div>
                         <div class="form-group">
-                            <label>شهر</label>
+                            <label data-i18n="marketers_city">شهر</label>
                             <input type="text" id="mktCity" placeholder="تهران" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>سابقه و تجربه</label>
+                        <label data-i18n="marketers_experience">سابقه و تجربه</label>
                         <textarea id="mktExp" placeholder="تجربه در حوزه پزشکی، بازاریابی، فروش و ..."></textarea>
                     </div>
                     <div class="form-group">
-                        <label>چطور می‌توانید به توسعه هوش طب کمک کنید؟</label>
+                        <label data-i18n="marketers_help">چطور می‌توانید به توسعه هوش طب کمک کنید؟</label>
                         <textarea id="mktHelp" placeholder="ارتباط با پزشکان، برگزاری وبینار، بازاریابی دیجیتال و ..."></textarea>
                     </div>
                     <button type="submit" class="btn-submit-form" id="mktSubmitBtn">
-                        <i class="fas fa-handshake"></i> ثبت درخواست همکاری
+                        <i class="fas fa-handshake"></i> <span data-i18n="marketers_submit">ثبت درخواست همکاری</span>
                     </button>
                     <div id="mktStatus" class="status-msg"></div>
                 </form>
@@ -736,20 +825,17 @@
         </div>
     </section>
 
-
-
-
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="container">
             <p>
                 <i class="fas fa-brain" style="color: #2563eb;"></i>
-                هوش‌طب &bull; پلتفرم پذیرش هوشمند پزشکی
+                <span data-i18n="footer_name">هوش‌طب &bull; پلتفرم پذیرش هوشمند پزشکی</span>
             </p>
             <p style="margin-top: 4px;">
-                <a href="#">درباره ما</a> &bull;
-                <a href="#">تماس با ما</a> &bull;
-                <a href="#">حریم خصوصی</a>
+                <a href="#" data-i18n="footer_about">درباره ما</a> &bull;
+                <a href="#" data-i18n="footer_contact">تماس با ما</a> &bull;
+                <a href="#" data-i18n="footer_privacy">حریم خصوصی</a>
             </p>
         </div>
     </footer>
@@ -762,13 +848,299 @@
         var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5Ue-bzD-4a-DIgU6ojLd121DNl6TSZI16cT9YAGoEe_dpSzpvD3yxM_YBpIXZItD9/exec';
 
         // ============================================================
+        //  دیکشنری چند زبانه
+        // ============================================================
+        var translations = {
+            fa: {
+                site_name: 'هوش‌طب',
+                nav_about: 'درباره',
+                nav_doctors: 'ثبت پزشکان',
+                nav_marketers: 'معرفی‌کنندگان',
+                nav_demo: 'دمو',
+                nav_enter: 'ورود به هوش طب',
+                cta_title: 'وارد مدل زبانی هوش طب شوید',
+                cta_desc: 'با کلیک بر روی دکمه زیر، وارد <strong>پلتفرم هوش طب</strong> شده و از خدمات پذیرش هوشمند پزشکی استفاده کنید.',
+                cta_button: 'ورود به هوش طب',
+                hero_badge: 'پلتفرم پذیرش هوشمند پزشکی',
+                hero_title: 'هوش‌طب چیست؟',
+                hero_desc: '<strong>هوش‌طب</strong> یک پلتفرم پذیرش پزشکی مبتنی بر <strong>هوش مصنوعی</strong> است که برای کلینیک‌ها و مطب‌های پزشکی طراحی شده است. این پلتفرم به بیماران اجازه می‌دهد تا قبل از ملاقات با پزشک، سابقه پزشکی خود را تکمیل کنند، علائم خود را شرح دهند و دلیل مراجعه خود را ارائه دهند. این امر به <strong>کاهش زمان انتظار</strong>، <strong>بهبود کیفیت مشاوره‌ها</strong> و امکان بررسی اطلاعات بیمار از قبل کمک می‌کند.',
+                feat_1: 'کاهش ۶۰٪ زمان انتظار',
+                feat_2: 'مشاوره دقیق‌تر',
+                feat_3: 'مبتنی بر هوش مصنوعی',
+                feat_4: 'امن و محرمانه',
+                demo_title: 'فیلم دموی هوش طب',
+                demo_desc: 'با مشاهده این فیلم، با <strong>عملکرد مدل زبانی هوش طب</strong> و نحوه استفاده از آن آشنا شوید.',
+                doctors_title: 'ثبت نام پزشکان',
+                doctors_desc: 'اگر پزشک هستید و می‌خواهید <strong>مدل زبانی هوش طب</strong> را در مطب خود راه‌اندازی کنید، اطلاعات خود را ثبت کنید تا کارشناسان ما با شما تماس بگیرند.',
+                doctors_form_title: 'ثبت نام پزشکان',
+                doctors_form_sub: 'راه‌اندازی مدل زبانی هوش طب در مطب شما',
+                doctors_fullname: 'نام و نام خانوادگی *',
+                doctors_medical_code: 'شماره نظام پزشکی *',
+                doctors_specialty: 'تخصص',
+                doctors_mobile: 'شماره موبایل *',
+                doctors_address: 'آدرس مطب',
+                doctors_description: 'توضیحات تکمیلی',
+                doctors_submit: 'ثبت درخواست',
+                marketers_title: 'معرفی‌کنندگان هوش طب',
+                marketers_desc: 'اگر به <strong>معرفی و توسعه هوش طب</strong> به پزشکان و کلینیک‌ها علاقه‌مند هستید، ثبت نام کنید و از پورسانت ویژه بهره‌مند شوید.',
+                marketers_form_title: 'ثبت نام معرفی‌کنندگان',
+                marketers_form_sub: 'همکاری در توسعه هوش طب و دریافت پورسانت',
+                marketers_fullname: 'نام و نام خانوادگی *',
+                marketers_mobile: 'شماره موبایل *',
+                marketers_email: 'ایمیل',
+                marketers_city: 'شهر',
+                marketers_experience: 'سابقه و تجربه',
+                marketers_help: 'چطور می‌توانید به توسعه هوش طب کمک کنید؟',
+                marketers_submit: 'ثبت درخواست همکاری',
+                select_option: 'انتخاب کنید',
+                specialty_internal: 'داخلی',
+                specialty_cardiology: 'قلب و عروق',
+                specialty_neurology: 'مغز و اعصاب',
+                specialty_orthopedics: 'ارتوپدی',
+                specialty_dermatology: 'پوست و مو',
+                specialty_ophthalmology: 'چشم پزشکی',
+                specialty_ent: 'گوش و حلق و بینی',
+                specialty_psychiatry: 'روانپزشکی',
+                specialty_obgyn: 'زنان و زایمان',
+                specialty_pediatrics: 'کودکان',
+                specialty_other: 'سایر',
+                footer_name: 'هوش‌طب • پلتفرم پذیرش هوشمند پزشکی',
+                footer_about: 'درباره ما',
+                footer_contact: 'تماس با ما',
+                footer_privacy: 'حریم خصوصی',
+                status_loading: 'در حال ثبت اطلاعات...',
+                status_success_doctor: '✅ درخواست شما با موفقیت ثبت شد! کارشناسان ما با شما تماس می‌گیرند.',
+                status_success_marketer: '✅ درخواست همکاری شما ثبت شد! با شما تماس می‌گیریم.',
+                status_error_required: 'لطفاً تمام فیلدهای ضروری را پر کنید.',
+                status_error_server: '❌ خطا در ارتباط با سرور: '
+            },
+            en: {
+                site_name: 'Hooshteb',
+                nav_about: 'About',
+                nav_doctors: 'Doctors Registration',
+                nav_marketers: 'Marketers',
+                nav_demo: 'Demo',
+                nav_enter: 'Enter Hooshteb',
+                cta_title: 'Enter Hooshteb AI Model',
+                cta_desc: 'Click the button below to enter the <strong>Hooshteb platform</strong> and use intelligent medical admission services.',
+                cta_button: 'Enter Hooshteb',
+                hero_badge: 'Intelligent Medical Admission Platform',
+                hero_title: 'What is Hooshteb?',
+                hero_desc: '<strong>Hooshteb</strong> is an AI-based medical admission platform designed for clinics and medical offices. It allows patients to complete their medical history, describe symptoms, and provide their reason for visit before meeting the doctor. This helps <strong>reduce waiting time</strong>, <strong>improve consultation quality</strong>, and enables pre-visit patient information review.',
+                feat_1: '60% Waiting Time Reduction',
+                feat_2: 'More Accurate Consultation',
+                feat_3: 'AI-Powered',
+                feat_4: 'Secure & Confidential',
+                demo_title: 'Hooshteb Demo Video',
+                demo_desc: 'Watch this video to learn about the <strong>Hooshteb AI model</strong> functionality and how to use it.',
+                doctors_title: 'Doctors Registration',
+                doctors_desc: 'If you are a doctor and want to set up the <strong>Hooshteb AI model</strong> in your clinic, register your information and our experts will contact you.',
+                doctors_form_title: 'Doctor Registration',
+                doctors_form_sub: 'Set up Hooshteb AI Model in Your Clinic',
+                doctors_fullname: 'Full Name *',
+                doctors_medical_code: 'Medical Council Code *',
+                doctors_specialty: 'Specialty',
+                doctors_mobile: 'Mobile Number *',
+                doctors_address: 'Clinic Address',
+                doctors_description: 'Additional Details',
+                doctors_submit: 'Submit Request',
+                marketers_title: 'Hooshteb Marketers',
+                marketers_desc: 'If you are interested in <strong>introducing and developing Hooshteb</strong> to doctors and clinics, register and receive special commissions.',
+                marketers_form_title: 'Marketer Registration',
+                marketers_form_sub: 'Collaborate in Hooshteb Development & Earn Commission',
+                marketers_fullname: 'Full Name *',
+                marketers_mobile: 'Mobile Number *',
+                marketers_email: 'Email',
+                marketers_city: 'City',
+                marketers_experience: 'Background & Experience',
+                marketers_help: 'How can you help develop Hooshteb?',
+                marketers_submit: 'Submit Collaboration Request',
+                select_option: 'Select',
+                specialty_internal: 'Internal Medicine',
+                specialty_cardiology: 'Cardiology',
+                specialty_neurology: 'Neurology',
+                specialty_orthopedics: 'Orthopedics',
+                specialty_dermatology: 'Dermatology',
+                specialty_ophthalmology: 'Ophthalmology',
+                specialty_ent: 'ENT',
+                specialty_psychiatry: 'Psychiatry',
+                specialty_obgyn: 'Obstetrics & Gynecology',
+                specialty_pediatrics: 'Pediatrics',
+                specialty_other: 'Other',
+                footer_name: 'Hooshteb • Intelligent Medical Admission Platform',
+                footer_about: 'About Us',
+                footer_contact: 'Contact Us',
+                footer_privacy: 'Privacy Policy',
+                status_loading: 'Submitting information...',
+                status_success_doctor: '✅ Your request has been submitted successfully! Our experts will contact you.',
+                status_success_marketer: '✅ Your collaboration request has been submitted! We will contact you.',
+                status_error_required: 'Please fill in all required fields.',
+                status_error_server: '❌ Server connection error: '
+            },
+            ar: {
+                site_name: 'هوش طب',
+                nav_about: 'حول',
+                nav_doctors: 'تسجيل الأطباء',
+                nav_marketers: 'المسوقين',
+                nav_demo: 'عرض توضيحي',
+                nav_enter: 'الدخول إلى هوش طب',
+                cta_title: 'الدخول إلى نموذج هوش طب اللغوي',
+                cta_desc: 'انقر على الزر أدناه للدخول إلى <strong>منصة هوش طب</strong> والاستفادة من خدمات القبول الطبي الذكي.',
+                cta_button: 'الدخول إلى هوش طب',
+                hero_badge: 'منصة القبول الطبي الذكي',
+                hero_title: 'ما هو هوش طب؟',
+                hero_desc: '<strong>هوش طب</strong> هي منصة قبول طبي تعتمد على <strong>الذكاء الاصطناعي</strong> مصممة للعيادات والمكاتب الطبية. تتيح هذه المنصة للمرضى إكمال تاريخهم الطبي، ووصف أعراضهم، وتقديم سبب الزيارة قبل مقابلة الطبيب. وهذا يساعد في <strong>تقليل وقت الانتظار</strong>، <strong>تحسين جودة الاستشارات</strong>، وإمكانية مراجعة معلومات المريض مسبقاً.',
+                feat_1: 'تقليل وقت الانتظار ٦٠٪',
+                feat_2: 'استشارة أكثر دقة',
+                feat_3: 'مدعوم بالذكاء الاصطناعي',
+                feat_4: 'آمن وسري',
+                demo_title: 'فيديو عرض هوش طب',
+                demo_desc: 'شاهد هذا الفيديو للتعرف على <strong>وظائف نموذج هوش طب اللغوي</strong> وكيفية استخدامه.',
+                doctors_title: 'تسجيل الأطباء',
+                doctors_desc: 'إذا كنت طبيباً وتريد إعداد <strong>نموذج هوش طب اللغوي</strong> في عيادتك، سجل معلوماتنا وسيتواصل معك خبراؤنا.',
+                doctors_form_title: 'تسجيل الأطباء',
+                doctors_form_sub: 'إعداد نموذج هوش طب اللغوي في عيادتك',
+                doctors_fullname: 'الاسم الكامل *',
+                doctors_medical_code: 'رمز نقابة الأطباء *',
+                doctors_specialty: 'التخصص',
+                doctors_mobile: 'رقم الهاتف المحمول *',
+                doctors_address: 'عنوان العيادة',
+                doctors_description: 'تفاصيل إضافية',
+                doctors_submit: 'تقديم الطلب',
+                marketers_title: 'مسوقي هوش طب',
+                marketers_desc: 'إذا كنت مهتماً بـ <strong>تقديم وتطوير هوش طب</strong> للأطباء والعيادات، سجل واحصل على عمولات خاصة.',
+                marketers_form_title: 'تسجيل المسوقين',
+                marketers_form_sub: 'التعاون في تطوير هوش طب والحصول على عمولة',
+                marketers_fullname: 'الاسم الكامل *',
+                marketers_mobile: 'رقم الهاتف المحمول *',
+                marketers_email: 'البريد الإلكتروني',
+                marketers_city: 'المدينة',
+                marketers_experience: 'الخبرة السابقة',
+                marketers_help: 'كيف يمكنك المساعدة في تطوير هوش طب؟',
+                marketers_submit: 'تقديم طلب التعاون',
+                select_option: 'اختر',
+                specialty_internal: 'الباطنة',
+                specialty_cardiology: 'أمراض القلب',
+                specialty_neurology: 'أمراض الأعصاب',
+                specialty_orthopedics: 'جراحة العظام',
+                specialty_dermatology: 'الأمراض الجلدية',
+                specialty_ophthalmology: 'طب العيون',
+                specialty_ent: 'الأذن والأنف والحنجرة',
+                specialty_psychiatry: 'الطب النفسي',
+                specialty_obgyn: 'النساء والولادة',
+                specialty_pediatrics: 'طب الأطفال',
+                specialty_other: 'أخرى',
+                footer_name: 'هوش طب • منصة القبول الطبي الذكي',
+                footer_about: 'معلومات عنا',
+                footer_contact: 'اتصل بنا',
+                footer_privacy: 'سياسة الخصوصية',
+                status_loading: 'جاري تسجيل المعلومات...',
+                status_success_doctor: '✅ تم تسجيل طلبك بنجاح! سيتواصل معك خبراؤنا.',
+                status_success_marketer: '✅ تم تسجيل طلب التعاون الخاص بك! سنتواصل معك.',
+                status_error_required: 'يرجى ملء جميع الحقول المطلوبة.',
+                status_error_server: '❌ خطأ في الاتصال بالخادم: '
+            }
+        };
+
+        var currentLang = 'fa';
+
+        // ============================================================
+        //  تابع تغییر زبان
+        // ============================================================
+        function switchLanguage(lang) {
+            currentLang = lang;
+            
+            // تغییر کلاس body
+            document.body.className = 'lang-' + lang;
+            
+            // تغییر جهت صفحه
+            if (lang === 'en') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+            } else {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = lang;
+            }
+
+            // به‌روزرسانی دکمه‌های زبان
+            document.querySelectorAll('.lang-switcher button').forEach(function(btn) {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // به‌روزرسانی متن‌ها
+            document.querySelectorAll('[data-i18n]').forEach(function(el) {
+                var key = el.dataset.i18n;
+                if (translations[lang] && translations[lang][key] !== undefined) {
+                    if (key === 'hero_desc' || key === 'cta_desc' || key === 'demo_desc' || key === 'doctors_desc' || key === 'marketers_desc') {
+                        el.innerHTML = translations[lang][key];
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+
+            // به‌روزرسانی placeholder ها
+            document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(function(el) {
+                var key = el.id;
+                // برای فیلدهای خاص
+                var placeholderMap = {
+                    'docFullName': lang === 'fa' ? 'دکتر رضا محمدی' : lang === 'en' ? 'Dr. Reza Mohammadi' : 'دكتور رضا محمدي',
+                    'docMedicalCode': lang === 'fa' ? '۱۲۳۴۵۶' : lang === 'en' ? '123456' : '١٢٣٤٥٦',
+                    'docMobile': lang === 'fa' ? '۰۹۱۲۳۴۵۶۷۸۹' : lang === 'en' ? '09123456789' : '٠٩١٢٣٤٥٦٧٨٩',
+                    'docAddress': lang === 'fa' ? 'تهران، خیابان ...' : lang === 'en' ? 'Tehran, Street ...' : 'طهران، شارع ...',
+                    'docDesc': lang === 'fa' ? 'نیازها، تعداد بیماران روزانه، سیستم‌های موجود و ...' : lang === 'en' ? 'Requirements, daily patient count, existing systems ...' : 'الاحتياجات، عدد المرضى اليومي، الأنظمة الموجودة ...',
+                    'mktFullName': lang === 'fa' ? 'علی رضایی' : lang === 'en' ? 'Ali Rezaei' : 'علي رضائي',
+                    'mktMobile': lang === 'fa' ? '۰۹۱۲۳۴۵۶۷۸۹' : lang === 'en' ? '09123456789' : '٠٩١٢٣٤٥٦٧٨٩',
+                    'mktEmail': lang === 'fa' ? 'ali@example.com' : lang === 'en' ? 'ali@example.com' : 'ali@example.com',
+                    'mktCity': lang === 'fa' ? 'تهران' : lang === 'en' ? 'Tehran' : 'طهران',
+                    'mktExp': lang === 'fa' ? 'تجربه در حوزه پزشکی، بازاریابی، فروش و ...' : lang === 'en' ? 'Experience in medical, marketing, sales ...' : 'الخبرة في المجال الطبي والتسويق والمبيعات ...',
+                    'mktHelp': lang === 'fa' ? 'ارتباط با پزشکان، برگزاری وبینار، بازاریابی دیجیتال و ...' : lang === 'en' ? 'Connecting with doctors, webinars, digital marketing ...' : 'التواصل مع الأطباء، تنظيم ندوات عبر الإنترنت، التسويق الرقمي ...'
+                };
+                if (placeholderMap[el.id]) {
+                    el.placeholder = placeholderMap[el.id];
+                }
+            });
+
+            // به‌روزرسانی گزینه‌های سلکت
+            document.querySelectorAll('select option').forEach(function(opt) {
+                var key = opt.dataset.i18n;
+                if (key && translations[lang] && translations[lang][key] !== undefined) {
+                    opt.textContent = translations[lang][key];
+                }
+            });
+
+            // ذخیره زبان در localStorage
+            try {
+                localStorage.setItem('hooshteb_lang', lang);
+            } catch(e) {}
+        }
+
+        // ============================================================
+        //  بارگذاری زبان ذخیره شده
+        // ============================================================
+        (function loadSavedLanguage() {
+            try {
+                var saved = localStorage.getItem('hooshteb_lang');
+                if (saved && translations[saved]) {
+                    switchLanguage(saved);
+                    return;
+                }
+            } catch(e) {}
+            // زبان پیش‌فرض: فارسی
+            switchLanguage('fa');
+        })();
+
+        // ============================================================
         //  تابع کمکی برای نمایش وضعیت
         // ============================================================
         function setStatus(element, message, type) {
             element.className = 'status-msg ' + type;
             element.textContent = message;
             if (type !== 'loading') {
-                setTimeout(function () {
+                setTimeout(function() {
                     element.className = 'status-msg';
                 }, 6000);
             }
@@ -777,7 +1149,7 @@
         // ============================================================
         //  ارسال فرم پزشکان
         // ============================================================
-        document.getElementById('doctorForm').addEventListener('submit', async function (e) {
+        document.getElementById('doctorForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             var fullName = document.getElementById('docFullName').value.trim();
@@ -788,7 +1160,7 @@
             var desc = document.getElementById('docDesc').value.trim();
 
             if (!fullName || !medicalCode || !mobile) {
-                setStatus(document.getElementById('docStatus'), 'لطفاً تمام فیلدهای ضروری را پر کنید.', 'error');
+                setStatus(document.getElementById('docStatus'), translations[currentLang].status_error_required, 'error');
                 return;
             }
 
@@ -796,7 +1168,7 @@
                 type: 'doctor',
                 fullName: fullName,
                 medicalCode: medicalCode,
-                specialty: specialty || 'نامشخص',
+                specialty: specialty || (currentLang === 'fa' ? 'نامشخص' : currentLang === 'en' ? 'Unspecified' : 'غير محدد'),
                 mobile: mobile,
                 address: address || '',
                 description: desc || '',
@@ -805,7 +1177,7 @@
 
             var statusEl = document.getElementById('docStatus');
             var btn = document.getElementById('docSubmitBtn');
-            setStatus(statusEl, 'در حال ثبت اطلاعات...', 'loading');
+            setStatus(statusEl, translations[currentLang].status_loading, 'loading');
             btn.disabled = true;
 
             try {
@@ -823,13 +1195,13 @@
                 var result = await response.json();
 
                 if (result.result === 'success') {
-                    setStatus(statusEl, '✅ درخواست شما با موفقیت ثبت شد! کارشناسان ما با شما تماس می‌گیرند.', 'success');
+                    setStatus(statusEl, translations[currentLang].status_success_doctor, 'success');
                     this.reset();
                 } else {
-                    setStatus(statusEl, '❌ ' + (result.error || 'خطای ناشناخته'), 'error');
+                    setStatus(statusEl, '❌ ' + (result.error || (currentLang === 'fa' ? 'خطای ناشناخته' : currentLang === 'en' ? 'Unknown error' : 'خطأ غير معروف')), 'error');
                 }
             } catch (error) {
-                setStatus(statusEl, '❌ خطا در ارتباط با سرور: ' + error.message, 'error');
+                setStatus(statusEl, translations[currentLang].status_error_server + error.message, 'error');
             } finally {
                 btn.disabled = false;
             }
@@ -838,7 +1210,7 @@
         // ============================================================
         //  ارسال فرم معرفی‌کنندگان
         // ============================================================
-        document.getElementById('marketerForm').addEventListener('submit', async function (e) {
+        document.getElementById('marketerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             var fullName = document.getElementById('mktFullName').value.trim();
@@ -849,7 +1221,7 @@
             var help = document.getElementById('mktHelp').value.trim();
 
             if (!fullName || !mobile) {
-                setStatus(document.getElementById('mktStatus'), 'لطفاً تمام فیلدهای ضروری را پر کنید.', 'error');
+                setStatus(document.getElementById('mktStatus'), translations[currentLang].status_error_required, 'error');
                 return;
             }
 
@@ -866,7 +1238,7 @@
 
             var statusEl = document.getElementById('mktStatus');
             var btn = document.getElementById('mktSubmitBtn');
-            setStatus(statusEl, 'در حال ثبت اطلاعات...', 'loading');
+            setStatus(statusEl, translations[currentLang].status_loading, 'loading');
             btn.disabled = true;
 
             try {
@@ -884,13 +1256,13 @@
                 var result = await response.json();
 
                 if (result.result === 'success') {
-                    setStatus(statusEl, '✅ درخواست همکاری شما ثبت شد! با شما تماس می‌گیریم.', 'success');
+                    setStatus(statusEl, translations[currentLang].status_success_marketer, 'success');
                     this.reset();
                 } else {
-                    setStatus(statusEl, '❌ ' + (result.error || 'خطای ناشناخته'), 'error');
+                    setStatus(statusEl, '❌ ' + (result.error || (currentLang === 'fa' ? 'خطای ناشناخته' : currentLang === 'en' ? 'Unknown error' : 'خطأ غير معروف')), 'error');
                 }
             } catch (error) {
-                setStatus(statusEl, '❌ خطا در ارتباط با سرور: ' + error.message, 'error');
+                setStatus(statusEl, translations[currentLang].status_error_server + error.message, 'error');
             } finally {
                 btn.disabled = false;
             }
@@ -899,8 +1271,8 @@
         // ============================================================
         //  محدودیت ورودی موبایل
         // ============================================================
-        document.querySelectorAll('input[type="tel"]').forEach(function (input) {
-            input.addEventListener('input', function () {
+        document.querySelectorAll('input[type="tel"]').forEach(function(input) {
+            input.addEventListener('input', function() {
                 this.value = this.value.replace(/\D/g, '').slice(0, 11);
             });
         });
