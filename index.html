@@ -921,7 +921,7 @@
         // ============================================================
         //  تنظیمات
         // ============================================================
-        var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwtsx15bGdFpUpaFl55C8-WorPZoAZwJ_Vs8zNO1kyKWtKpIk-SQ1cUr3wWywvrMY4/exec';
+        var SCRIPT_URL_REGISTER = 'https://script.google.com/macros/s/AKfycbxnrtF9MmS_j4uCx3G7Io8KAWBM0jMk7VxjkzaG3Wn2wRNRJX37P7_3_jSXD1TGsj0f/exec';
         var SCRIPT_URL_LOGIN_LLM = 'https://script.google.com/macros/s/AKfycbxwtsx15bGdFpUpaFl55C8-WorPZoAZwJ_Vs8zNO1kyKWtKpIk-SQ1cUr3wWywvrMY4/exec';
         var LLM_URL = 'http://llm.hooshteb.ir';
 
@@ -1358,7 +1358,7 @@
                     formData.append(key, data[key]);
                 }
 
-                var response = await fetch(SCRIPT_URL, {
+                var response = await fetch(SCRIPT_URL_REGISTER, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formData.toString()
@@ -1419,7 +1419,7 @@
                     formData.append(key, data[key]);
                 }
 
-                var response = await fetch(SCRIPT_URL, {
+                var response = await fetch(SCRIPT_URL_REGISTER, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formData.toString()
