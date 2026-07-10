@@ -862,7 +862,8 @@
                 با مشاهده این فیلم، با <strong>عملکرد مدل زبانی هوش طب</strong> و نحوه استفاده از آن آشنا شوید.
             </p>
             <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                <iframe id="demoVideo"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
                         title="دموی هوش طب"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
@@ -1094,7 +1095,9 @@
                 status_success_doctor: '✅ درخواست شما با موفقیت ثبت شد! کارشناسان ما با شما تماس می‌گیرند.',
                 status_success_marketer: '✅ درخواست همکاری شما ثبت شد! با شما تماس می‌گیریم.',
                 status_error_required: 'لطفاً تمام فیلدهای ضروری را پر کنید.',
-                status_error_server: '❌ خطا در ارتباط با سرور: '
+                status_error_server: '❌ خطا در ارتباط با سرور: ',
+                // ... سایر کلیدها
+                demo_video: 'https://www.aparat.com/video/video/embed/videohash/ywu2xu5/vt/frame'  // آدرس فیلم فارسی
             },
         
             // ==================== انگلیسی (English - en) ====================
@@ -1162,7 +1165,9 @@
                 status_success_doctor: '✅ Your request was submitted! Our team will contact you shortly.',
                 status_success_marketer: '✅ Your partnership request was submitted! We\'ll be in touch.',
                 status_error_required: 'Please fill in all required fields.',
-                status_error_server: '❌ Server error: '
+                status_error_server: '❌ Server error: ',
+                // ... سایر کلیدها
+                demo_video: 'https://www.aparat.com/video/video/embed/videohash/kkv430d/vt/frame'  // آدرس فیلم انگلیسی
             },
         
             // ==================== عربی (Arabic - ar) ====================
@@ -1230,7 +1235,11 @@
                 status_success_doctor: '✅ تم تسجيل طلبك بنجاح! سيتواصل معك فريقنا قريباً.',
                 status_success_marketer: '✅ تم تسجيل طلب الشراكة! سنتواصل معك.',
                 status_error_required: 'يرجى ملء جميع الحقول المطلوبة.',
-                status_error_server: '❌ خطأ في الاتصال بالخادم: '
+                status_error_server: '❌ خطأ في الاتصال بالخادم: ',
+                // ... سایر کلیدها
+                demo_video: 'https://www.aparat.com/video/video/embed/videohash/qhg8i16/vt/frame'  // آدرس فیلم عربی
+                
+
             }
         };
         var currentLang = 'fa';
@@ -1269,6 +1278,12 @@
                     }
                 }
             });
+
+            // به‌روزرسانی ویدئو
+            var videoIframe = document.getElementById('demoVideo');
+            if (videoIframe && translations[lang] && translations[lang].demo_video) {
+                videoIframe.src = translations[lang].demo_video;
+            }
 
             // به‌روزرسانی placeholder ها
             var placeholderMap = {
