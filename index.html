@@ -1352,6 +1352,7 @@
                         btn.disabled = false;
 
                         if (response.ok) {
+                            showOnlineMessage();
                             window.open(LLM_URLS, '_blank');
                         } else {
                             showOfflineMessage();
@@ -1399,6 +1400,7 @@
                         btn.disabled = false;
 
                         if (response.ok) {
+                            showOnlineMessage();
                             window.open(LLM_URL, '_blank');
                         } else {
                             showOfflineMessage();
