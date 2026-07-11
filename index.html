@@ -1343,6 +1343,30 @@
 
                 const win = window.open("", "_blank");
 
+                // سایت با HTTP باز شده است
+                fetch(LLM_URL + '/is_access_hooshteb', {
+                    method: 'GET',
+                    cache: 'no-cache'
+                })
+                    .then(function (response) {
+
+                        btn.disabled = false;
+
+                        if (response.ok) {
+                            window.open(LLM_URL, '_blank');
+                        } else {
+                            showOfflineMessage();
+                        }
+
+                    })
+                    .catch(function (error) {
+
+                        btn.disabled = false;
+                        console.error(error);
+                        showOfflineMessage();
+
+                    });
+                /*
                 fetch(SCRIPT_URL_LOGIN_LLM + "?action=check_llm")
                     .then(r => r.text())
                     .then(text => {
@@ -1359,6 +1383,7 @@
                         win.close();
                         showOfflineMessage();
                     });
+                    */
             }
             else {
 
