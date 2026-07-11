@@ -1003,6 +1003,7 @@
         var SCRIPT_URL_REGISTER = 'https://script.google.com/macros/s/AKfycbxnrtF9MmS_j4uCx3G7Io8KAWBM0jMk7VxjkzaG3Wn2wRNRJX37P7_3_jSXD1TGsj0f/exec';
         var SCRIPT_URL_LOGIN_LLM = 'https://script.google.com/macros/s/AKfycbxwtsx15bGdFpUpaFl55C8-WorPZoAZwJ_Vs8zNO1kyKWtKpIk-SQ1cUr3wWywvrMY4/exec';
         var LLM_URL = 'http://llm.hooshteb.ir';
+        var LLM_URLS = 'https://llm.hooshteb.ir';
 
         // ============================================================
         //  دیکشنری چند زبانه
@@ -1343,8 +1344,9 @@
 
                 const win = window.open("", "_blank");
 
-                // سایت با HTTP باز شده است
-                fetch(LLM_URL + '/is_access_hooshteb', {
+                // سایت با HTTPS باز شده است
+                alert(1)
+                fetch(LLM_URLS + '/is_access_hooshteb', {
                     method: 'GET',
                     cache: 'no-cache'
                 })
@@ -1353,7 +1355,7 @@
                         btn.disabled = false;
 
                         if (response.ok) {
-                            window.open(LLM_URL, '_blank');
+                            window.open(LLM_URLS, '_blank');
                         } else {
                             showOfflineMessage();
                         }
