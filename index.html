@@ -801,6 +801,7 @@
 
                 <a href="#about" data-i18n="nav_about">درباره</a>
                 <a href="#doctors" data-i18n="nav_doctors">ثبت پزشکان</a>
+                <a href="doctors.html" data-i18n="nav_doctors_list">لیست پزشکان</a>
                 <a href="#marketers" data-i18n="nav_marketers">معرفی‌کنندگان</a>
                 <a href="#demo" data-i18n="nav_demo">دمو</a>
             </div>
@@ -811,16 +812,29 @@
     <section id="enter">
         <div class="container">
             <div class="cta-section">
-                <h2><img src="assets/logoenter.png" alt="هوش‌طب" style="width: 40px; height: 40px; vertical-align: middle; margin-left: 10px;"><span data-i18n="cta_title">وارد مدل زبانی هوش طب شوید</span></h2>
+                <h2>
+                    <img src="assets/logoenter.png" alt="هوش‌طب" style="width: 40px; height: 40px; vertical-align: middle; margin-left: 10px;">
+                    <span data-i18n="cta_title">وارد مدل زبانی هوش طب شوید</span>
+                </h2>
                 <p data-i18n="cta_desc">
                     با کلیک بر روی دکمه زیر، وارد <strong>پلتفرم هوش طب</strong> شده و
                     از خدمات پذیرش هوشمند پزشکی استفاده کنید.
                 </p>
-                <button onclick="checkAndEnterHooshteb()" class="btn-cta-main" id="enterBtn">
-                    <i class="fas fa-arrow-left"></i> 
+
+                <!-- دکمه ورود به هوش طب -->
+                <button onclick="handleSmartVisit()"  class="btn-cta-main"  id="smartVisitBtn" >
+                    <i class="fas fa-arrow-left"></i>
                     <span data-i18n="cta_button">ورود به هوش طب</span>
                     <span class="sparkle">✨</span>
                 </button>
+
+                <!-- ✅ دکمه جدید ویزیت هوشمند -->
+                <button onclick="checkAndEnterHooshteb()" class="btn-cta-main"  id="enterBtn" style="margin-top: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fas fa-stethoscope"></i>
+                    <span data-i18n="smart_visit">ویزیت هوشمند</span>
+                    <span class="sparkle">🌟</span>
+                </button>
+
                 <div id="ctaStatus" class="cta-status">
                     <i class="fas fa-info-circle"></i>
                     <span id="ctaStatusText">پیام وضعیت</span>
@@ -828,7 +842,6 @@
             </div>
         </div>
     </section>
-
     <!-- ===== HERO / ABOUT ===== -->
     <section id="about" class="hero">
         <div class="container">
@@ -884,11 +897,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label data-i18n="doctors_fullname">نام و نام خانوادگی <span class="required">*</span></label>
-                            <input type="text" id="docFullName" placeholder="دکتر رضا محمدی" required />
+                            <input type="text" id="docFullName" placeholder="" required />
                         </div>
                         <div class="form-group">
                             <label data-i18n="doctors_medical_code">شماره نظام پزشکی <span class="required">*</span></label>
-                            <input type="text" id="docMedicalCode" placeholder="۱۲۳۴۵۶" required />
+                            <input type="text" id="docMedicalCode" placeholder="" required />
                         </div>
                     </div>
                     <div class="form-row">
@@ -911,7 +924,7 @@
                         </div>
                         <div class="form-group">
                             <label data-i18n="doctors_mobile">شماره موبایل <span class="required">*</span></label>
-                            <input type="tel" id="docMobile" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required />
+                            <input type="tel" id="docMobile" placeholder="" required />
                         </div>
                     </div>
                     <div class="form-group">
@@ -946,11 +959,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label data-i18n="marketers_fullname">نام و نام خانوادگی <span class="required">*</span></label>
-                            <input type="text" id="mktFullName" placeholder="علی رضایی" required />
+                            <input type="text" id="mktFullName" placeholder="" required />
                         </div>
                         <div class="form-group">
                             <label data-i18n="marketers_mobile">شماره موبایل <span class="required">*</span></label>
-                            <input type="tel" id="mktMobile" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required />
+                            <input type="tel" id="mktMobile" placeholder="" required />
                         </div>
                     </div>
                     <div class="form-row">
@@ -1000,8 +1013,9 @@
         // ============================================================
         //  تنظیمات
         // ============================================================
-        var SCRIPT_URL_REGISTER = 'https://script.google.com/macros/s/AKfycbxnrtF9MmS_j4uCx3G7Io8KAWBM0jMk7VxjkzaG3Wn2wRNRJX37P7_3_jSXD1TGsj0f/exec';
-        var SCRIPT_URL_LOGIN_LLM = 'https://script.google.com/macros/s/AKfycbxwtsx15bGdFpUpaFl55C8-WorPZoAZwJ_Vs8zNO1kyKWtKpIk-SQ1cUr3wWywvrMY4/exec';
+        //var SCRIPT_URL_REGISTER = 'https://script.google.com/macros/s/AKfycbxnrtF9MmS_j4uCx3G7Io8KAWBM0jMk7VxjkzaG3Wn2wRNRJX37P7_3_jSXD1TGsj0f/exec';
+        var SCRIPT_URL_REGISTER = 'https://hooshteb-api.ghfreza.workers.dev/api/register'
+        
         var LLM_URL = 'http://llm.hooshteb.ir';
         var LLM_URLS = 'https://llm.hooshteb.ir';
 
@@ -1014,7 +1028,8 @@
                 // --- بخش عمومی و ناوبری (General & Navigation) ---
                 site_name: 'هوش‌طب',
                 nav_about: 'هوش‌طب چیست؟',
-                nav_doctors: 'برای پزشکان',
+                nav_doctors: 'ثبت نام پزشکان',
+                nav_doctors_list: 'لیست پزشکان',  // ← جدید
                 nav_marketers: 'همکاری با ما',
                 nav_demo: 'نحوه عملکرد',
                 nav_enter: 'شروع پذیرش',
@@ -1103,6 +1118,7 @@
                 site_name: 'HooshTab (Smart Medical Intake)',
                 nav_about: 'What is HooshTab?',
                 nav_doctors: 'For Doctors',
+                nav_doctors_list: 'Doctors List',  // ← جدید
                 nav_marketers: 'Partners',
                 nav_demo: 'How It Works',
                 nav_enter: 'Start Intake',
@@ -1173,6 +1189,7 @@
                 site_name: 'هوش طب (الذكاء الطبي)',
                 nav_about: 'ما هو هوش طب؟',
                 nav_doctors: 'للأطباء',
+                nav_doctors_list: 'قائمة الأطباء',  // ← جدید
                 nav_marketers: 'التعاون معنا',
                 nav_demo: 'طريقة العمل',
                 nav_enter: 'ابدأ الاستقبال',
@@ -1331,6 +1348,14 @@
         // ============================================================
         //  بررسی وضعیت مدل زبانی هوش طب با Image (دقیق‌ترین روش)
         // ============================================================
+        function handleSmartVisit() {
+            // نمایش پیام وضعیت
+            document.getElementById('ctaStatusText').textContent = 'در حال انتقال به بخش ویزیت هوشمند...';
+
+            // باز کردن در تب جدید
+            window.open('doctors.html', '_blank');
+        }
+
         function checkAndEnterHooshteb() {
             var statusEl = document.getElementById('ctaStatus');
             var statusText = document.getElementById('ctaStatusText');
