@@ -1337,27 +1337,33 @@
                             }
 
                         }); 
-(function handlePortalFromUrl() {
-    const params = new URLSearchParams(window.location.search);
+(function runPortalFromUrl() {
+                        try {
+                            const params = new URLSearchParams(window.location.search);
 
-    // ?doctor یا ?doctor=1 یا ?doctor=true
-    if (params.has('doctor')) {
-        // اگر می‌خواهید به سایت مقصد برود:
-        // window.location.href = 'https://SITE-B.biz/doctor';
-        // یا اگر می‌خواهید دکمه پزشک را خودکار کلیک کند:
-        const btn = document.getElementById('enterBtnoffline');
-        if (btn) btn.click();
-        return;
-    }
+                            // ?doctor=1  یا  ?doctor
+                            if (params.has('doctor')) {
+                                const btn = document.getElementById('enterBtnoffline');
+                                if (btn) {
+                                    // اگر <a href="..."> باشد، مستقیم می‌رود؛ اگر <button> باشد، کلیک می‌شود
+                                    btn.click();
+                                }
+                                return;
+                            }
 
-    // ?patient یا ?patient=1
-    if (params.has('patient') || params.has('patiant')) {
-        const btn = document.getElementById('smartPateintBtn');
-        if (btn) btn.click();
-        return;
-    }
-})();
-
+                            // ?patient=1  یا  ?patient  (و املای رایج اشتباه: patiant)
+                            if (params.has('patient') || params.has('patiant')) {
+                                const btn = document.getElementById('smartPateintBtn');
+                                if (btn) {
+                                    btn.click();
+                                }
+                                return;
+                            }
+                        } catch (e) {
+                            console.warn('runPortalFromUrl error:', e);
+                        }
+                    })();
+                    
                 </script>
 
 </body>
