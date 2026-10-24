@@ -1337,32 +1337,34 @@
                             }
 
                         }); 
+
 (function runPortalFromUrl() {
-                        try {
-                            const params = new URLSearchParams(window.location.search);
+    function openPortal() {
+        try {
+            const params = new URLSearchParams(window.location.search);
 
-                            // ?doctor=1  یا  ?doctor
-                            if (params.has('doctor')) {
-                                const btn = document.getElementById('enterBtnoffline');
-                                if (btn) {
-                                    // اگر <a href="..."> باشد، مستقیم می‌رود؛ اگر <button> باشد، کلیک می‌شود
-                                    btn.click();
-                                }
-                                return;
-                            }
+            let btn = null;
 
-                            // ?patient=1  یا  ?patient  (و املای رایج اشتباه: patiant)
-                            if (params.has('patient') || params.has('patiant')) {
-                                const btn = document.getElementById('smartPateintBtn');
-                                if (btn) {
-                                    btn.click();
-                                }
-                                return;
-                            }
-                        } catch (e) {
-                            console.warn('runPortalFromUrl error:', e);
-                        }
-                    })();
+            if (params.has('doctor')) {
+                btn = document.getElementById('enterBtnoffline');
+            } else if (params.has('patient') || params.has('patiant')) {
+                btn = document.getElementById('smartPateintBtn');
+            }
+
+            if (btn) {
+                btn.click();
+            }
+        } catch (e) {
+            console.warn('runPortalFromUrl error:', e);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openPortal);
+    } else {
+        openPortal();
+    }
+})();                    
                     
                 </script>
 
