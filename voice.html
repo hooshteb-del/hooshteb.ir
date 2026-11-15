@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
 
-  <title>نوشتن شرح حال با صدا | هوش‌طب</title>
+  <title>نوشتن شرح حال خود با صدا | هوش‌طب</title>
 
   <style>
     * {
@@ -126,7 +126,7 @@
 
 <body>
   <main>
-    <h1>هوش‌طب · نوشتن با صدا</h1>
+    <h1>هوش‌طب · نوشتن شرح حال خود با صدا</h1>
 
     <p class="notice">
       شروع صحبت را بزنید و فارسی صحبت کنید.
@@ -134,14 +134,7 @@
       پیش از انتقال متن، نام داروها و اعداد را بررسی کنید.
     </p>
 
-    <p>
-      <small>
-        سرویس گفتار مرورگر ممکن است صدا را برای پردازش
-        به سرور خود ارسال کند.
-      </small>
-    </p>
-
-    <div class="row">
+<div class="row">
       <button id="start" type="button" disabled>
         🎙 شروع صحبت
       </button>
@@ -169,6 +162,7 @@
       placeholder="صحبت شما اینجا نوشته می‌شود؛ تایپ دستی هم ممکن است."
     ></textarea>
 
+    <p id="copyNotice" role="status" aria-live="polite" style="font-size:20px;font-weight:800;color:#075e64;margin:4px 0"></p>
     <small id="count">۰ / ۱۵۰۰</small>
 
     <div class="row">
@@ -355,6 +349,28 @@
       }, 6000);
     }
 
+    // Serialize writes so an older transcript cannot overwrite a newer one.
+    let copyQueue = Promise.resolve();
+    let copyVersion = 0;
+    let returnAfterAck = false;
+    function copyAll() {
+      const text = byId('text').value;
+      const version = ++copyVersion;
+      byId('copyNotice').textContent = '';
+      if (!text.trim()) return;
+      copyQueue = copyQueue.then(async () => {
+        if (version !== copyVersion) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          if (version === copyVersion && byId('text').value === text)
+            byId('copyNotice').textContent = 'کل متن شرح حال در حافظه کپی شد.';
+        } catch (error) {
+          if (version === copyVersion)
+            byId('copyNotice').textContent = 'کپی انجام نشد؛ دکمهٔ «کپی متن» را بزنید.';
+        }
+      });
+    }
+
     function startSpeech() {
       if (
         recognition ||
@@ -522,6 +538,7 @@
           );
 
           input.value += addition.slice(0, remaining);
+          if (remaining > 0) copyAll();
           input.scrollTop = input.scrollHeight;
 
           report('یک بخش متن نهایی دریافت شد');
@@ -711,6 +728,8 @@
 
         sending = false;
         transferred = data.ok === true;
+        const shouldReturn = transferred && returnAfterAck;
+        returnAfterAck = false;
 
         byId('connection').textContent = String(
           data.message ||
@@ -718,6 +737,7 @@
         );
 
         update();
+        if (shouldReturn) closeVoicePage();
       }
     });
 
@@ -758,6 +778,7 @@
         }, hostOrigin);
       } catch (error) {
         sending = false;
+        returnAfterAck = false;
 
         byId('connection').textContent =
           'ارتباط با فرم قطع شده است؛ متن را کپی و در فرم بچسبانید.';
@@ -768,6 +789,7 @@
 
       ackTimer = setTimeout(function () {
         sending = false;
+        returnAfterAck = false;
 
         byId('connection').textContent =
           'تأیید انتقال دریافت نشد؛ فرم بیمار را بررسی کنید. ' +
@@ -786,7 +808,11 @@
       }
 
       try {
-        await navigator.clipboard.writeText(input.value);
+        ++copyVersion;
+        await copyQueue;
+        const snapshot = input.value;
+        await navigator.clipboard.writeText(snapshot);
+        if (input.value === snapshot) byId('copyNotice').textContent = 'کل متن شرح حال در حافظه کپی شد.';
 
         byId('connection').textContent =
           'متن کپی شد؛ در کادر شرح حال بیمار بچسبانید.';
@@ -801,14 +827,27 @@
     }
 
     function returnToPatient() {
-      if (
-        !transferred &&
-        byId('text').value.trim() &&
-        !confirm('متن هنوز منتقل نشده است. صفحه بسته شود؟')
-      ) {
+      if (recognition) {
+        setStatus('ابتدا دریافت صدا را متوقف کنید و پس از نمایش متن برگردید.');
         return;
       }
+      if (sending) { returnAfterAck = true; return; }
+      if (!transferred && byId('text').value.trim()) {
+        const yes = confirm('شرح حال انتقال نیافته است. آیا مایل به انتقال شرح حال هستید؟');
+        if (yes) {
+          if (!hostOrigin || !hostWindow || hostWindow.closed) {
+            byId('connection').textContent = 'ارتباط با فرم بیمار برقرار نیست؛ متن را کپی کنید و در فرم بچسبانید.';
+            return;
+          }
+          returnAfterAck = true;
+          transferText();
+          return;
+        }
+      }
+      closeVoicePage();
+    }
 
+    function closeVoicePage() {
       abortSpeech();
 
       if (hostWindow) {
@@ -830,7 +869,7 @@
     byId('transfer').addEventListener('click', transferText);
     byId('copy').addEventListener('click', copyText);
     byId('back').addEventListener('click', returnToPatient);
-    byId('text').addEventListener('input', update);
+    byId('text').addEventListener('input', () => { ++copyVersion; byId('copyNotice').textContent = ''; update(); });
 
     // مخفی‌شدن موقت صفحه باعث لغو خودکار دریافت صدا نمی‌شود.
     window.addEventListener('pagehide', function () {
