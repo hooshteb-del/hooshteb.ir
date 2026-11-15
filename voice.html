@@ -151,6 +151,20 @@
 
     <p id="interim"></p>
 
+    <section class="notice" aria-label="آزمایش میکروفن">
+      <button id="micTestButton" type="button" class="secondary">
+        آزمایش میکروفن
+      </button>
+    
+      <label for="micLevel">بلندی صدای ورودی</label>
+      <progress id="micLevel" value="0" max="100"
+                style="display:block;width:100%;height:20px"></progress>
+    
+      <p id="micTestStatus" role="status" aria-live="polite">
+        برای آزمایش، ابتدا دو ثانیه سکوت کنید و سپس یک جمله بگویید.
+      </p>
+    </section>
+    
     <label for="text">متن قابل ویرایش</label>
 
     <textarea
@@ -853,5 +867,141 @@
 
     update();
   </script>
+
+<script>
+(() => {
+  'use strict';
+
+  const button = document.getElementById('micTestButton');
+  const meter = document.getElementById('micLevel');
+  const status = document.getElementById('micTestStatus');
+  const speechStart = document.getElementById('start');
+  const speechStop = document.getElementById('stop');
+
+  let current = null;
+
+  function finish(test, message) {
+    if (current !== test) return;
+    current = null;
+
+    clearTimeout(test.timer);
+    cancelAnimationFrame(test.frame);
+
+    if (test.stream) {
+      test.stream.getTracks().forEach(track => track.stop());
+    }
+    if (test.context && test.context.state !== 'closed') {
+      test.context.close().catch(() => {});
+    }
+
+    meter.value = 0;
+    button.textContent = 'آزمایش میکروفن';
+    status.textContent = message;
+  }
+
+  // هنگام آزمایش، تشخیص گفتار هم‌زمان میکروفن را باز نکند.
+  speechStart.addEventListener('click', event => {
+    if (!current) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    status.textContent =
+      'ابتدا «پایان آزمایش» را بزنید و سپس «شروع صحبت» را انتخاب کنید.';
+  }, true);
+
+  button.addEventListener('click', async () => {
+    if (current) {
+      finish(current, 'آزمایش متوقف شد.');
+      return;
+    }
+
+    if (!speechStart.disabled || speechStop.disabled) {
+      // اگر تشخیص گفتار در حال توقف است، منتظر پایان آن نیز می‌مانیم.
+      if (typeof recognition !== 'undefined' && recognition) {
+        status.textContent = 'ابتدا دریافت گفتار را متوقف کنید.';
+        return;
+      }
+    } else {
+      status.textContent = 'ابتدا دریافت گفتار را متوقف کنید.';
+      return;
+    }
+
+    const Audio = window.AudioContext || window.webkitAudioContext;
+    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia || !Audio) {
+      status.textContent =
+        'آزمایش میکروفن در این صفحه در دسترس نیست. آدرس را با HTTPS در Chrome باز کنید.';
+      return;
+    }
+
+    const test = { context: null, stream: null, frame: 0, timer: 0 };
+    current = test;
+    button.textContent = 'پایان آزمایش';
+    status.textContent = 'در انتظار مجوز میکروفن…';
+
+    try {
+      test.context = new Audio();
+      const audio = test.context;
+
+      // فعال‌سازی صدا مستقیماً از لمس دکمه انجام می‌شود.
+      const resumed = audio.resume();
+      const acquired = navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false
+      }).then(stream => {
+        if (current !== test) {
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
+        test.stream = stream;
+      });
+
+      await Promise.all([resumed, acquired]);
+      if (current !== test) return;
+
+      const source = audio.createMediaStreamSource(test.stream);
+      const analyser = audio.createAnalyser();
+      analyser.fftSize = 1024;
+      source.connect(analyser);
+      // اتصال به بلندگو نداریم؛ صدای بیمار پخش یا ضبط نمی‌شود.
+
+      const samples = new Float32Array(analyser.fftSize);
+      status.textContent =
+        'آزمایش فعال است: دو ثانیه سکوت کنید، سپس حرف بزنید و حرکت نوار را ببینید.';
+
+      function draw() {
+        if (current !== test) return;
+
+        analyser.getFloatTimeDomainData(samples);
+        let sum = 0;
+        for (const value of samples) sum += value * value;
+
+        const rms = Math.sqrt(sum / samples.length);
+        const db = 20 * Math.log10(Math.max(rms, 0.000001));
+        meter.value = Math.max(0, Math.min(100, (db + 75) * 100 / 65));
+
+        test.frame = requestAnimationFrame(draw);
+      }
+
+      draw();
+      test.timer = setTimeout(() => {
+        finish(test, 'آزمایش تمام شد و میکروفن آزاد شد.');
+      }, 10000);
+
+    } catch (error) {
+      const reason = {
+        NotAllowedError: 'مرورگر اجازهٔ دسترسی به میکروفن را نداد.',
+        NotFoundError: 'مرورگر میکروفنی پیدا نکرد.',
+        NotReadableError: 'مرورگر نتوانست ورودی میکروفن را باز کند.'
+      };
+      finish(test, (reason[error.name] || 'آزمایش میکروفن شروع نشد.') +
+        ' کد: ' + error.name);
+    }
+  });
+
+  window.addEventListener('pagehide', () => {
+    if (current) finish(current, 'آزمایش پایان یافت.');
+  });
+})();
+</script>
+
 </body>
 </html>
