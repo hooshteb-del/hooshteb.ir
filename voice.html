@@ -109,11 +109,10 @@
     }
 
     #speechActivity { height:4px; background:#dae7e5; border-radius:4px; overflow:hidden; }
-    #speechActivity i { display:block; height:100%; width:0; background:#087f82; transition:width .18s; }
-    #speechActivity[data-state="listening"] i { width:12%; }
-    #speechActivity[data-state="speech"] i { width:70%; animation:voicePulse .85s ease-in-out infinite alternate; }
-    @keyframes voicePulse { to {width:98%} }
-    @media (prefers-reduced-motion:reduce) { #speechActivity i { animation:none!important; transition:none; } }
+    #speechActivity i { display:block;height:100%;width:100%;background:#087f82;transform-origin:right;transform:scaleX(0); }
+    #speechActivity[data-state="listening"] i { transform:scaleX(.025); }
+    #speechActivity[data-state="speech"] i { transform:scaleX(.12); }
+    #speechActivity[data-live] i { transform:scaleX(var(--level,0)); }
     @media (max-width: 600px) {
       main {
         margin: 0;
@@ -144,6 +143,7 @@
       </button>
     </div>
 
+    <label style="font-size:13px"><input type="checkbox" id="liveMeter" checked> نمایش شدت صدا</label>
     <div id="speechActivity" aria-hidden="true"><i></i></div>
 
     <p id="status" role="status" aria-live="polite">
@@ -154,7 +154,7 @@
 
 
     
-    <label for="text">متن قابل ویرایش</label>
+    <label for="text">متن قابل ویرایش</label> <strong id="copyNotice" role="status" aria-live="polite" style="font-size:inherit;font-family:inherit;font-weight:bold"></strong>
 
     <textarea
       id="text"
@@ -162,7 +162,6 @@
       placeholder="صحبت شما اینجا نوشته می‌شود؛ تایپ دستی هم ممکن است."
     ></textarea>
 
-    <p id="copyNotice" role="status" aria-live="polite" style="font-size:20px;font-weight:800;color:#075e64;margin:4px 0"></p>
     <small id="count">۰ / ۱۵۰۰</small>
 
     <div class="row">
@@ -282,7 +281,59 @@
         ' / ۱۵۰۰';
     }
 
+    let meterSession = null;
+    function releaseLevel() {
+      const m = meterSession;
+      meterSession = null;
+      if (!m) return;
+      cancelAnimationFrame(m.frame);
+      if (m.stream) m.stream.getTracks().forEach(t => t.stop());
+      if (m.ctx && m.ctx.state !== 'closed') m.ctx.close().catch(()=>{});
+      const bar = byId('speechActivity');
+      delete bar.dataset.live;
+      bar.style.removeProperty('--level');
+    }
+    async function monitorLevel(owner) {
+      if (!byId('liveMeter').checked || !navigator.mediaDevices || meterSession || stopping || recognition !== owner) return;
+      const Audio = window.AudioContext || window.webkitAudioContext;
+      if (!Audio) return;
+      const m = meterSession = {};
+      try {
+        m.ctx = new Audio();
+        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        if (m !== meterSession) { stream.getTracks().forEach(t=>t.stop()); return; }
+        m.stream = stream;
+        await m.ctx.resume();
+        if (m !== meterSession) return;
+        m.src = m.ctx.createMediaStreamSource(stream);
+        const analyser = m.ctx.createAnalyser();
+        analyser.fftSize = 512;
+        m.src.connect(analyser);
+        const data = new Float32Array(analyser.fftSize);
+        const bar = byId('speechActivity');
+        bar.dataset.live = '1';
+        let level = 0, last = 0;
+        function draw(now) {
+          if (m !== meterSession) return;
+          analyser.getFloatTimeDomainData(data);
+          let sum = 0;
+          for (const x of data) sum += x*x;
+          const db = 10*Math.log10(Math.max(1e-12,sum/data.length));
+          const target = .68*Math.pow(Math.max(0,Math.min(1,(db+57)/47)),1.4);
+          const dt = Math.max(1,Math.min(80,now-last)); last = now;
+          level += (target-level)*(1-Math.exp(-dt/(target>level?35:95)));
+          bar.style.setProperty('--level',level.toFixed(3));
+          m.frame=requestAnimationFrame(draw);
+        }
+        draw(performance.now());
+      } catch(e) { if(m===meterSession) releaseLevel(); }
+    }
+    byId('liveMeter').onchange = function(){
+      if (!this.checked) releaseLevel();
+      else if (recognition && !stopping) monitorLevel(recognition);
+    };
     function clearSpeechTimers() {
+      releaseLevel();
       byId('speechActivity').dataset.state = '';
       clearTimeout(stopTimer);
       clearTimeout(startTimer);
@@ -320,6 +371,7 @@
 
       byId('speechActivity').dataset.state = '';
       stopping = true;
+      releaseLevel();
       update();
 
       setStatus('در حال توقف؛ منتظر دریافت نتیجه نهایی…');
@@ -363,10 +415,10 @@
         try {
           await navigator.clipboard.writeText(text);
           if (version === copyVersion && byId('text').value === text)
-            byId('copyNotice').textContent = 'کل متن شرح حال در حافظه کپی شد.';
+            byId('copyNotice').textContent = '(کل متن شرح حال در حافظه کپی شد)';
         } catch (error) {
           if (version === copyVersion)
-            byId('copyNotice').textContent = 'کپی انجام نشد؛ دکمهٔ «کپی متن» را بزنید.';
+            byId('copyNotice').textContent = '(کپی انجام نشد؛ دکمهٔ «کپی متن» را بزنید)';
         }
       });
     }
@@ -481,6 +533,7 @@
         if (recognition !== active) return;
 
         activity('speech');
+        monitorLevel(active);
         phase = 'گفتار شناسایی شد';
 
         setStatus('گفتار شناسایی شد؛ منتظر تبدیل به متن…');
@@ -502,6 +555,7 @@
       active.onresult = function (event) {
         if (recognition !== active) return;
 
+        monitorLevel(active);
         const interim = [];
 
         for (let i = 0; i < event.results.length; i++) {
@@ -812,7 +866,7 @@
         await copyQueue;
         const snapshot = input.value;
         await navigator.clipboard.writeText(snapshot);
-        if (input.value === snapshot) byId('copyNotice').textContent = 'کل متن شرح حال در حافظه کپی شد.';
+        if (input.value === snapshot) byId('copyNotice').textContent = '(کل متن شرح حال در حافظه کپی شد)';
 
         byId('connection').textContent =
           'متن کپی شد؛ در کادر شرح حال بیمار بچسبانید.';
