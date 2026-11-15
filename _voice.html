@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+
+  <title>نوشتن شرح حال با صدا | هوش‌طب</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f1f6f5;
+      color: #173b43;
+      font: 16px/1.9 Tahoma, Arial, sans-serif;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 24px auto;
+      padding: 22px;
+      background: white;
+      border: 1px solid #d6e5e3;
+      border-radius: 16px;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 230px;
+      padding: 14px;
+      border: 1px solid #b8cece;
+      border-radius: 10px;
+      resize: vertical;
+    }
+
+    button {
+      background: #087f82;
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #e4efee;
+      color: #19444b;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: default;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+
+    .notice {
+      background: #e7f4f1;
+      padding: 12px;
+      border-radius: 9px;
+    }
+
+    #status {
+      min-height: 40px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #075e64;
+      white-space: pre-wrap;
+    }
+
+    #interim {
+      color: #637779;
+      white-space: pre-wrap;
+    }
+
+    small {
+      color: #637779;
+    }
+
+    details {
+      margin-top: 20px;
+    }
+
+    #diagnostics {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: #f5f7f7;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        margin: 0;
+        border-radius: 0;
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>هوش‌طب · نوشتن با صدا</h1>
+
+    <p class="notice">
+      شروع صحبت را بزنید و فارسی صحبت کنید.
+      پس از پایان هر نوبت، برای ادامه دوباره «شروع صحبت» را بزنید.
+      پیش از انتقال متن، نام داروها و اعداد را بررسی کنید.
+    </p>
+
+    <p>
+      <small>
+        سرویس گفتار مرورگر ممکن است صدا را برای پردازش
+        به سرور خود ارسال کند.
+      </small>
+    </p>
+
+    <div class="row">
+      <button id="start" type="button" disabled>
+        🎙 شروع صحبت
+      </button>
+
+      <button id="stop" type="button" class="secondary" disabled>
+        توقف
+      </button>
+    </div>
+
+    <p id="status" role="status" aria-live="polite">
+      در حال آماده‌سازی…
+    </p>
+
+    <p id="interim"></p>
+
+    <section class="notice" aria-label="آزمایش میکروفن">
+      <button id="micTestButton" type="button" class="secondary">
+        آزمایش میکروفن
+      </button>
+    
+      <label for="micLevel">بلندی صدای ورودی</label>
+      <progress id="micLevel" value="0" max="100"
+                style="display:block;width:100%;height:20px"></progress>
+    
+      <p id="micTestStatus" role="status" aria-live="polite">
+        برای آزمایش، ابتدا دو ثانیه سکوت کنید و سپس یک جمله بگویید.
+      </p>
+    </section>
+    
+    <label for="text">متن قابل ویرایش</label>
+
+    <textarea
+      id="text"
+      maxlength="1500"
+      placeholder="صحبت شما اینجا نوشته می‌شود؛ تایپ دستی هم ممکن است."
+    ></textarea>
+
+    <small id="count">۰ / ۱۵۰۰</small>
+
+    <div class="row">
+      <button id="transfer" type="button" disabled>
+        انتقال به شرح حال
+      </button>
+
+      <button id="copy" type="button" class="secondary">
+        کپی متن
+      </button>
+
+      <button id="back" type="button" class="secondary">
+        بازگشت به فرم بیمار
+      </button>
+    </div>
+
+    <p id="connection" class="notice">
+      در حال بررسی اتصال به فرم بیمار…
+    </p>
+
+    <p>
+      <small>
+        انتقال متن، ثبت نهایی نیست.
+        پس از بازگشت به فرم بیمار، دکمه «ثبت پیام» را بزنید.
+      </small>
+    </p>
+
+    <details>
+      <summary>جزئیات فنی برای بررسی مشکل</summary>
+      <div id="diagnostics"></div>
+    </details>
+
+    <noscript>
+      برای استفاده از این صفحه، جاوااسکریپت مرورگر باید فعال باشد.
+    </noscript>
+  </main>
+
+  <script>
+    'use strict';
+
+    const byId = id => document.getElementById(id);
+
+    const MAX_LENGTH = 1500;
+
+    const Engine =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    const requestId =
+      new URLSearchParams(location.hash.slice(1)).get('request');
+
+    const hostWindow = window.opener;
+
+    let hostOrigin = '';
+    let transferred = false;
+    let sending = false;
+
+    let recognition = null;
+    let stopping = false;
+
+    let stopTimer = null;
+    let startTimer = null;
+    let sessionTimer = null;
+    let ackTimer = null;
+    let readyTimer = null;
+    let readyTimeout = null;
+
+    const diagnosticLines = [];
+
+    function report(message) {
+      const time = new Date().toLocaleTimeString('fa-IR');
+
+      diagnosticLines.push(time + ' — ' + message);
+
+      if (diagnosticLines.length > 30) {
+        diagnosticLines.shift();
+      }
+
+      byId('diagnostics').textContent =
+        diagnosticLines.join('\n');
+    }
+
+    function setStatus(message) {
+      byId('status').textContent = message;
+    }
+
+    function allowedOrigin(origin) {
+      return (
+        origin === 'https://script.google.com' ||
+        origin === 'https://script.googleusercontent.com' ||
+        /^https:\/\/[a-z0-9-]+-script\.googleusercontent\.com$/.test(origin)
+      );
+    }
+
+    function update() {
+      byId('start').disabled =
+        !Engine ||
+        !window.isSecureContext ||
+        !!recognition ||
+        transferred ||
+        sending;
+
+      byId('stop').disabled =
+        !recognition || stopping;
+
+      byId('transfer').disabled =
+        !hostOrigin ||
+        !!recognition ||
+        transferred ||
+        sending ||
+        !byId('text').value.trim();
+
+      byId('text').readOnly = transferred || sending;
+
+      byId('count').textContent =
+        byId('text').value.length.toLocaleString('fa-IR') +
+        ' / ۱۵۰۰';
+    }
+
+    function clearSpeechTimers() {
+      clearTimeout(stopTimer);
+      clearTimeout(startTimer);
+      clearTimeout(sessionTimer);
+
+      stopTimer = null;
+      startTimer = null;
+      sessionTimer = null;
+    }
+
+    function abortSpeech() {
+      const previous = recognition;
+
+      // نتایج دیررس این اجرا دیگر پذیرفته نمی‌شوند.
+      recognition = null;
+      stopping = false;
+
+      clearSpeechTimers();
+
+      if (previous) {
+        try {
+          previous.abort();
+        } catch (error) {
+          report('توقف اجباری: ' + error.name);
+        }
+      }
+
+      update();
+    }
+
+    function stopSpeech() {
+      if (!recognition || stopping) return;
+
+      const active = recognition;
+
+      stopping = true;
+      update();
+
+      setStatus('در حال توقف؛ منتظر دریافت نتیجه نهایی…');
+      report('درخواست توقف');
+
+      try {
+        active.stop();
+      } catch (error) {
+        abortSpeech();
+        setStatus('دریافت صدا متوقف شد؛ متن قبلی حفظ شده است.');
+        return;
+      }
+
+      if (recognition !== active) return;
+
+      stopTimer = setTimeout(function () {
+        if (recognition !== active) return;
+
+        abortSpeech();
+
+        setStatus(
+          'پاسخ نهایی دریافت نشد؛ متن موجود حفظ شده است. ' +
+          'می‌توانید دوباره شروع کنید.'
+        );
+
+        report('مهلت دریافت نتیجه پس از توقف پایان یافت');
+      }, 6000);
+    }
+
+    function startSpeech() {
+      if (
+        recognition ||
+        transferred ||
+        sending
+      ) {
+        return;
+      }
+
+      if (!window.isSecureContext) {
+        setStatus('صفحه را با آدرس HTTPS باز کنید.');
+        return;
+      }
+
+      if (!Engine) {
+        setStatus(
+          'این مرورگر تشخیص گفتار را پشتیبانی نمی‌کند؛ ' +
+          'از تایپ یا میکروفن صفحه‌کلید استفاده کنید.'
+        );
+        return;
+      }
+
+      if (byId('text').value.length >= MAX_LENGTH) {
+        setStatus(
+          'سقف ۱۵۰۰ کاراکتر تکمیل شده است؛ ابتدا متن را کوتاه‌تر کنید.'
+        );
+        return;
+      }
+
+      let active;
+
+      try {
+        active = new Engine();
+      } catch (error) {
+        report('ساخت سرویس ناموفق: ' + error.name);
+        setStatus('راه‌اندازی تشخیص گفتار در این مرورگر ممکن نشد.');
+        return;
+      }
+
+      const committed = new Set();
+
+      let receivedFinal = false;
+      let reachedLimit = false;
+      let phase = 'درخواست شروع';
+
+      recognition = active;
+      stopping = false;
+
+      byId('interim').textContent = '';
+
+      active.lang = 'fa-IR';
+      //active.lang = 'en-US';
+
+      // هر بار یک نوبت گفتار؛ ادامه با لمس دوباره دکمه شروع.
+      active.continuous = false;
+      active.interimResults = true;
+      active.maxAlternatives = 1;
+
+      setStatus(
+        'در حال شروع؛ اگر مرورگر اجازه میکروفن خواست، تأیید کنید.'
+      );
+
+      report('درخواست تشخیص گفتار فارسی');
+      update();
+
+      active.onstart = function () {
+        if (recognition !== active) return;
+
+        clearTimeout(startTimer);
+
+        phase = 'تشخیص گفتار شروع شد';
+
+        setStatus('تشخیص گفتار شروع شد؛ منتظر دریافت صدا…');
+        report(phase);
+
+        // پایان یک نوبت طولانی، بدون شروع مجدد خودکار میکروفن.
+        sessionTimer = setTimeout(function () {
+          if (recognition === active) stopSpeech();
+        }, 60000);
+      };
+
+      active.onaudiostart = function () {
+        if (recognition !== active) return;
+
+        phase = 'دریافت صدا آغاز شد';
+
+        setStatus('دریافت صدا آغاز شد؛ فارسی صحبت کنید.');
+        report(phase);
+      };
+
+      active.onsoundstart = function () {
+        if (recognition !== active) return;
+
+        phase = 'صدا شناسایی شد';
+        report(phase);
+      };
+
+      active.onspeechstart = function () {
+        if (recognition !== active) return;
+
+        phase = 'گفتار شناسایی شد';
+
+        setStatus('گفتار شناسایی شد؛ منتظر تبدیل به متن…');
+        report(phase);
+      };
+
+      active.onnomatch = function () {
+        if (recognition !== active) return;
+
+        phase = 'نتیجه قابل تشخیصی دریافت نشد';
+
+        setStatus(
+          'نتیجه قابل تشخیصی دریافت نشد؛ دوباره واضح‌تر صحبت کنید.'
+        );
+
+        report(phase);
+      };
+
+      active.onresult = function (event) {
+        if (recognition !== active) return;
+
+        const interim = [];
+
+        for (let i = 0; i < event.results.length; i++) {
+          const result = event.results[i];
+
+          const text = String(
+            result[0] && result[0].transcript || ''
+          ).trim();
+
+          if (!result.isFinal) {
+            if (text) interim.push(text);
+            continue;
+          }
+
+          if (committed.has(i)) continue;
+
+          committed.add(i);
+
+          if (!text) continue;
+
+          receivedFinal = true;
+          phase = 'متن نهایی دریافت شد';
+
+          const input = byId('text');
+
+          const separator =
+            input.value && !/\s$/.test(input.value) ? ' ' : '';
+
+          const addition = separator + text;
+
+          const remaining = Math.max(
+            0,
+            MAX_LENGTH - input.value.length
+          );
+
+          input.value += addition.slice(0, remaining);
+          input.scrollTop = input.scrollHeight;
+
+          report('یک بخش متن نهایی دریافت شد');
+          update();
+
+          if (addition.length >= remaining) {
+            reachedLimit = true;
+            stopSpeech();
+
+            setStatus(
+              'سقف ۱۵۰۰ کاراکتر تکمیل شد؛ ' +
+              'ادامه گفتار اضافه نمی‌شود.'
+            );
+
+            break;
+          }
+        }
+
+        byId('interim').textContent = interim.length
+          ? 'متن موقت: ' + interim.join(' ')
+          : '';
+      };
+
+      active.onerror = function (event) {
+        if (recognition !== active) return;
+
+        const messages = {
+          'not-allowed':
+            'اجازه میکروفن داده نشده یا دسترسی توسط مرورگر مسدود شده است.',
+
+          'service-not-allowed':
+            'استفاده از سرویس تشخیص گفتار مجاز نیست.',
+
+          'network':
+            'ارتباط با سرویس تشخیص گفتار برقرار نشد یا قطع شد.',
+
+          'audio-capture':
+            'میکروفن در دسترس نیست.',
+
+          'no-speech':
+            'گفتاری دریافت نشد؛ دوباره شروع کنید.',
+
+          'language-not-supported':
+            'سرویس این مرورگر زبان فارسی را پشتیبانی نمی‌کند.',
+
+          'aborted':
+            'دریافت صدا متوقف شد.'
+        };
+
+        const code = String(event.error || 'unknown');
+
+        report('خطای تشخیص گفتار: ' + code);
+        report('آخرین مرحله: ' + phase);
+
+        abortSpeech();
+
+        setStatus(
+          (messages[code] || 'تبدیل صدا به متن ناموفق بود.') +
+          '\nکد خطا: ' + code +
+          '\nمتن قبلی حفظ شده است.'
+        );
+      };
+
+      active.onend = function () {
+        if (recognition !== active) return;
+
+        recognition = null;
+        stopping = false;
+
+        clearSpeechTimers();
+        report('پایان تشخیص گفتار؛ آخرین مرحله: ' + phase);
+
+        if (reachedLimit) {
+          setStatus('سقف متن تکمیل شد؛ متن را بررسی و منتقل کنید.');
+        } else if (receivedFinal) {
+          setStatus(
+            'متن دریافت شد؛ آن را بررسی کنید. ' +
+            'برای ادامه دوباره «شروع صحبت» را بزنید.'
+          );
+        } else if (byId('interim').textContent) {
+          setStatus(
+            'فقط متن موقت دریافت شد و نتیجه نهایی نرسید. ' +
+            'متن موقت نمایش‌داده‌شده را بررسی کنید.'
+          );
+        } else {
+          setStatus(
+            'دریافت صدا پایان یافت، اما متنی دریافت نشد.' +
+            '\nآخرین مرحله: ' + phase
+          );
+        }
+
+        update();
+      };
+
+      startTimer = setTimeout(function () {
+        if (recognition !== active) return;
+
+        abortSpeech();
+
+        setStatus(
+          'تشخیص گفتار شروع نشد. ' +
+          'مجوز میکروفن و دسترسی سرویس گفتار را بررسی کنید.'
+        );
+
+        report('مهلت شروع تشخیص گفتار پایان یافت');
+      }, 30000);
+
+      try {
+        active.start();
+      } catch (error) {
+        report('خطا هنگام شروع: ' + error.name);
+
+        abortSpeech();
+
+        setStatus(
+          'شروع تشخیص گفتار ممکن نشد.' +
+          '\nکد خطا: ' + error.name
+        );
+      }
+    }
+
+    // ارتباط با فرم بیمار
+
+    function stopHandshake() {
+      clearInterval(readyTimer);
+      clearTimeout(readyTimeout);
+    }
+
+    function announceReady() {
+      if (!hostWindow || !requestId || hostOrigin) return;
+
+      try {
+        // فقط شناسه تصادفی ارسال می‌شود؛ متن بیمار ارسال نمی‌شود.
+        hostWindow.postMessage({
+          type: 'HT_VOICE_READY',
+          request: requestId
+        }, '*');
+      } catch (error) {
+        stopHandshake();
+
+        byId('connection').textContent =
+          'ارتباط با فرم ممکن نیست؛ متن را کپی و در فرم بچسبانید.';
+      }
+    }
+
+    window.addEventListener('message', function (event) {
+      if (
+        !hostWindow ||
+        event.source !== hostWindow ||
+        !allowedOrigin(event.origin)
+      ) {
+        return;
+      }
+
+      const data = event.data;
+
+      if (
+        !data ||
+        typeof data !== 'object' ||
+        !requestId ||
+        data.request !== requestId
+      ) {
+        return;
+      }
+
+      if (data.type === 'HT_VOICE_INIT') {
+        if (hostOrigin && hostOrigin !== event.origin) return;
+
+        hostOrigin = event.origin;
+        stopHandshake();
+
+        byId('connection').textContent =
+          'اتصال به فرم برقرار است؛ پس از بررسی متن، آن را منتقل کنید.';
+
+        report('اتصال به فرم بیمار برقرار شد');
+        update();
+
+        return;
+      }
+
+      if (
+        data.type === 'HT_VOICE_ACK' &&
+        event.origin === hostOrigin &&
+        sending
+      ) {
+        clearTimeout(ackTimer);
+
+        sending = false;
+        transferred = data.ok === true;
+
+        byId('connection').textContent = String(
+          data.message ||
+          (transferred ? 'متن منتقل شد.' : 'انتقال متن ناموفق بود.')
+        );
+
+        update();
+      }
+    });
+
+    function transferText() {
+      if (
+        !hostWindow ||
+        !hostOrigin ||
+        recognition ||
+        sending ||
+        transferred
+      ) {
+        return;
+      }
+
+      const text = byId('text').value.trim();
+
+      if (!text) return;
+
+      if (text.length > MAX_LENGTH) {
+        setStatus('متن نباید بیش از ۱۵۰۰ کاراکتر باشد.');
+        return;
+      }
+
+      sending = true;
+      update();
+
+      byId('connection').textContent = 'در حال انتقال متن…';
+
+      try {
+        if (hostWindow.closed) {
+          throw new Error('ParentClosed');
+        }
+
+        hostWindow.postMessage({
+          type: 'HT_VOICE_TEXT',
+          request: requestId,
+          text: text
+        }, hostOrigin);
+      } catch (error) {
+        sending = false;
+
+        byId('connection').textContent =
+          'ارتباط با فرم قطع شده است؛ متن را کپی و در فرم بچسبانید.';
+
+        update();
+        return;
+      }
+
+      ackTimer = setTimeout(function () {
+        sending = false;
+
+        byId('connection').textContent =
+          'تأیید انتقال دریافت نشد؛ فرم بیمار را بررسی کنید. ' +
+          'اگر متن اضافه نشده، دوباره انتقال را بزنید یا آن را کپی کنید.';
+
+        update();
+      }, 6000);
+    }
+
+    async function copyText() {
+      const input = byId('text');
+
+      if (!input.value.trim()) {
+        setStatus('هنوز متنی برای کپی وجود ندارد.');
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(input.value);
+
+        byId('connection').textContent =
+          'متن کپی شد؛ در کادر شرح حال بیمار بچسبانید.';
+      } catch (error) {
+        input.focus();
+        input.select();
+        input.setSelectionRange(0, input.value.length);
+
+        byId('connection').textContent =
+          'متن انتخاب شد؛ گزینه «کپی» مرورگر یا صفحه‌کلید را بزنید.';
+      }
+    }
+
+    function returnToPatient() {
+      if (
+        !transferred &&
+        byId('text').value.trim() &&
+        !confirm('متن هنوز منتقل نشده است. صفحه بسته شود؟')
+      ) {
+        return;
+      }
+
+      abortSpeech();
+
+      if (hostWindow) {
+        try {
+          hostWindow.focus();
+        } catch (error) {
+          // بازگشت دستی همچنان ممکن است.
+        }
+
+        window.close();
+      }
+
+      byId('connection').textContent =
+        'برای بازگشت، تب فرم بیمار را انتخاب کنید.';
+    }
+
+    byId('start').addEventListener('click', startSpeech);
+    byId('stop').addEventListener('click', stopSpeech);
+    byId('transfer').addEventListener('click', transferText);
+    byId('copy').addEventListener('click', copyText);
+    byId('back').addEventListener('click', returnToPatient);
+    byId('text').addEventListener('input', update);
+
+    // مخفی‌شدن موقت صفحه باعث لغو خودکار دریافت صدا نمی‌شود.
+    window.addEventListener('pagehide', function () {
+      abortSpeech();
+      stopHandshake();
+      clearTimeout(ackTimer);
+    });
+
+    report('نسخه صفحه: voice-mobile-2');
+    report('اتصال امن: ' + (window.isSecureContext ? 'بله' : 'خیر'));
+    report('قابلیت تشخیص گفتار: ' + (Engine ? 'موجود' : 'ناموجود'));
+
+    if (!window.isSecureContext) {
+      setStatus('این صفحه را با آدرس HTTPS باز کنید.');
+    } else if (!Engine) {
+      setStatus(
+        'این مرورگر تشخیص گفتار را پشتیبانی نمی‌کند؛ ' +
+        'تایپ دستی همچنان فعال است.'
+      );
+    } else {
+      setStatus('آماده است؛ «شروع صحبت» را بزنید.');
+    }
+
+    if (hostWindow && requestId) {
+      readyTimer = setInterval(announceReady, 700);
+
+      readyTimeout = setTimeout(function () {
+        stopHandshake();
+
+        if (!hostOrigin) {
+          byId('connection').textContent =
+            'اتصال خودکار به فرم برقرار نشد؛ ' +
+            'متن را کپی و در کادر شرح حال بچسبانید.';
+        }
+      }, 15000);
+
+      announceReady();
+    } else {
+      byId('connection').textContent =
+        'صفحه مستقل باز شده است. دریافت صدا قابل آزمایش است؛ ' +
+        'برای انتقال خودکار، این صفحه را از دکمه فرم بیمار باز کنید.';
+    }
+
+    update();
+  </script>
+
+<script>
+(() => {
+  'use strict';
+
+  const button = document.getElementById('micTestButton');
+  const meter = document.getElementById('micLevel');
+  const status = document.getElementById('micTestStatus');
+  const speechStart = document.getElementById('start');
+  const speechStop = document.getElementById('stop');
+
+  let current = null;
+
+  function finish(test, message) {
+    if (current !== test) return;
+    current = null;
+
+    clearTimeout(test.timer);
+    cancelAnimationFrame(test.frame);
+
+    if (test.stream) {
+      test.stream.getTracks().forEach(track => track.stop());
+    }
+    if (test.context && test.context.state !== 'closed') {
+      test.context.close().catch(() => {});
+    }
+
+    meter.value = 0;
+    button.textContent = 'آزمایش میکروفن';
+    status.textContent = message;
+  }
+
+  // هنگام آزمایش، تشخیص گفتار هم‌زمان میکروفن را باز نکند.
+  speechStart.addEventListener('click', event => {
+    if (!current) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    status.textContent =
+      'ابتدا «پایان آزمایش» را بزنید و سپس «شروع صحبت» را انتخاب کنید.';
+  }, true);
+
+  button.addEventListener('click', async () => {
+    if (current) {
+      finish(current, 'آزمایش متوقف شد.');
+      return;
+    }
+
+    if (!speechStart.disabled || speechStop.disabled) {
+      // اگر تشخیص گفتار در حال توقف است، منتظر پایان آن نیز می‌مانیم.
+      if (typeof recognition !== 'undefined' && recognition) {
+        status.textContent = 'ابتدا دریافت گفتار را متوقف کنید.';
+        return;
+      }
+    } else {
+      status.textContent = 'ابتدا دریافت گفتار را متوقف کنید.';
+      return;
+    }
+
+    const Audio = window.AudioContext || window.webkitAudioContext;
+    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia || !Audio) {
+      status.textContent =
+        'آزمایش میکروفن در این صفحه در دسترس نیست. آدرس را با HTTPS در Chrome باز کنید.';
+      return;
+    }
+
+    const test = { context: null, stream: null, frame: 0, timer: 0 };
+    current = test;
+    button.textContent = 'پایان آزمایش';
+    status.textContent = 'در انتظار مجوز میکروفن…';
+
+    try {
+      test.context = new Audio();
+      const audio = test.context;
+
+      // فعال‌سازی صدا مستقیماً از لمس دکمه انجام می‌شود.
+      const resumed = audio.resume();
+      const acquired = navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false
+      }).then(stream => {
+        if (current !== test) {
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
+        test.stream = stream;
+      });
+
+      await Promise.all([resumed, acquired]);
+      if (current !== test) return;
+
+      const source = audio.createMediaStreamSource(test.stream);
+      const analyser = audio.createAnalyser();
+      analyser.fftSize = 1024;
+      source.connect(analyser);
+      // اتصال به بلندگو نداریم؛ صدای بیمار پخش یا ضبط نمی‌شود.
+
+      const samples = new Float32Array(analyser.fftSize);
+      status.textContent =
+        'آزمایش فعال است: دو ثانیه سکوت کنید، سپس حرف بزنید و حرکت نوار را ببینید.';
+
+      function draw() {
+        if (current !== test) return;
+
+        analyser.getFloatTimeDomainData(samples);
+        let sum = 0;
+        for (const value of samples) sum += value * value;
+
+        const rms = Math.sqrt(sum / samples.length);
+        const db = 20 * Math.log10(Math.max(rms, 0.000001));
+        meter.value = Math.max(0, Math.min(100, (db + 75) * 100 / 65));
+
+        test.frame = requestAnimationFrame(draw);
+      }
+
+      draw();
+      test.timer = setTimeout(() => {
+        finish(test, 'آزمایش تمام شد و میکروفن آزاد شد.');
+      }, 10000);
+
+    } catch (error) {
+      const reason = {
+        NotAllowedError: 'مرورگر اجازهٔ دسترسی به میکروفن را نداد.',
+        NotFoundError: 'مرورگر میکروفنی پیدا نکرد.',
+        NotReadableError: 'مرورگر نتوانست ورودی میکروفن را باز کند.'
+      };
+      finish(test, (reason[error.name] || 'آزمایش میکروفن شروع نشد.') +
+        ' کد: ' + error.name);
+    }
+  });
+
+  window.addEventListener('pagehide', () => {
+    if (current) finish(current, 'آزمایش پایان یافت.');
+  });
+})();
+</script>
+
+</body>
+</html>
