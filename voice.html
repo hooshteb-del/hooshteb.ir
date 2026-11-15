@@ -154,7 +154,7 @@
 
 
     
-    <label for="text">متن قابل ویرایش</label> <strong id="copyNotice" role="status" aria-live="polite" style="font-size:inherit;font-family:inherit;font-weight:bold"></strong>
+    <label for="text">متن قابل ویرایش</label>
 
     <textarea
       id="text"
@@ -162,6 +162,7 @@
       placeholder="صحبت شما اینجا نوشته می‌شود؛ تایپ دستی هم ممکن است."
     ></textarea>
 
+    <p id="copyNotice" role="status" aria-live="polite" style="font-size:20px;font-weight:800;color:#075e64;margin:4px 0"></p>
     <small id="count">۰ / ۱۵۰۰</small>
 
     <div class="row">
@@ -415,10 +416,10 @@
         try {
           await navigator.clipboard.writeText(text);
           if (version === copyVersion && byId('text').value === text)
-            byId('copyNotice').textContent = '(کل متن شرح حال در حافظه کپی شد)';
+            byId('copyNotice').textContent = 'کل متن شرح حال در حافظه کپی شد.';
         } catch (error) {
           if (version === copyVersion)
-            byId('copyNotice').textContent = '(کپی انجام نشد؛ دکمهٔ «کپی متن» را بزنید)';
+            byId('copyNotice').textContent = 'کپی انجام نشد؛ دکمهٔ «کپی متن» را بزنید.';
         }
       });
     }
@@ -866,7 +867,7 @@
         await copyQueue;
         const snapshot = input.value;
         await navigator.clipboard.writeText(snapshot);
-        if (input.value === snapshot) byId('copyNotice').textContent = '(کل متن شرح حال در حافظه کپی شد)';
+        if (input.value === snapshot) byId('copyNotice').textContent = 'کل متن شرح حال در حافظه کپی شد.';
 
         byId('connection').textContent =
           'متن کپی شد؛ در کادر شرح حال بیمار بچسبانید.';
